@@ -1,0 +1,69 @@
+Appendix 1: Data format
+
+The data consists of two separate data : followship network and tweets which are both in UTF8 format.
+
+1. Followship network
+
+Format
+
++--------------------------------+
+|USERID\tFOLLOWEEID\n            |
++--------------------------------+
+
+*USERID and FOLLOWEEID are represented by strings.
+*These IDs are anonymized.  
+
+Example
+
++--------------------------------+
+|123	456                      |
+|321	456                      |
+|321	123                      |
++--------------------------------+
+
+*Users 123 and 321 are followers of user 456.
+*User 321 is a follower of user 123.
+
+2. Tweets
+
+Format
+
++--------------------------------+
+|TAG:VALUE|#|TAG:VALUE|#|....... |
++--------------------------------+
+
+Example
+
++----------------------------------------------------------------------------------------------------------------------------------------+
+|time:A|#|mid:B|#|uid:C \t D \t E ...|#|isContainLink:F|#|eventList:G|#|rtTime:H|#|rtMid:I|#|rtUid:J|#|rtIsContainLink:K|#|rtEventList:L |
++----------------------------------------------------------------------------------------------------------------------------------------+
+
+For a post, the number of tags is ten. In those tag, 'time', 'mid' ,'uid' and 'isContainLink' are necessary, while others may be ignored.
+
+The values of tags 'time', 'mid', 'isContainLink', 'rtTime', 'rtMid', 'rtIsContainLink' are atomic and their meaning are:
+
++-----------------------------------------------------------------------------------------------------+
+|time: the published time, the format of A is yyyy-mm-dd hh:mm:ss                                     |
+|mid: the message ID, B is represented by string ID                                                   |
+|isContainLink: whether the tweet contains link, this value is a boolean value                        |
+|rtTime: the re-tweeted tweet's published time, the format of this value is is yyyy-mm-dd hh:mm:ss    |
+|rtMid: the re-tweeted tweet's message ID, this ID is represented by string ID                        |
+|rtIsContainLink: whether the re-tweeted tweet contains link, this value is a boolean value           |
++-----------------------------------------------------------------------------------------------------+
+
+The values of tags 'uid','rtUid','eventList','rtEventList' are composite and their formats are:
+
++--------------------------------------------------------------------------------------------------------------------------------------+
+|uid & rtUid:                                                                                                                          |
+|The format of uid is C$c1$c2... \t D$d1$d2... \t E$e1$e2..... where J E D C is the message propagation path,                          |
+|which means E re-tweeted user J's message I, D re-tweeted E's meesage and then C retweeted D's message.                               |
+|If user mention other users in the post, the mentioned users' IDs will be appended after the user ID and be separated by symbol '$'.  |
+|                                                                                                                                      |
+|The format of  rtUid is J$j1$j2... If user J did not mention anybody in post I, the value of rtUid is J                               |
+|                                                                                                                                      |
+|eventList & rtEventList:                                                                                                              |
+|The format of eventList and rtEventList is eventName1$keyword11$keyword12...\t eventName2$keyword21$keyword22....                     |
+|The first phrase in each segment stands for the name of each event. And the following words are the keywords extracted from tweets    |
+|that can describe the event and being contained in the post at the same time. The tags of eventList and rtEventList may be missing.   |
++--------------------------------------------------------------------------------------------------------------------------------------+
+
