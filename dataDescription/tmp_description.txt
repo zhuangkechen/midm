@@ -1,0 +1,34 @@
+#Nodes  
+58655849
+
+#Links 
+265580802
+
+#Tweets 
+369797719 
+
+#Events
+203
+
+### choosenTweet_event
+2010-04 Yushu 
+2011-03 most retweeted tweets
+2011-05 Bin Laden
+2011-07 Wenzhou Train
+2010-10 Gaddafi
+
+### choosenTweet for learn or test
+2010-05
+2011-02
+2011-04
+2011-07
+2011-11
+
+
+1. sTweetsCount
+
+total counts = 4449430
+
+2. tweetsCount
+total counts = 3977763 
+
