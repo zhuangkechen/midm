@@ -18,11 +18,11 @@
 2010-10 Gaddafi
 
 ### choosenTweet for learn or test
-2010-05
+2010-03
 2011-02
 2011-04
-2011-07
-2011-11
+2011-06
+2011-09
 
 
 1. sTweetsCount
@@ -32,3 +32,7 @@ total counts = 4449430
 2. tweetsCount
 total counts = 3977763 
 
+### Here we extracted the two months tweets during Gaddafi event.
+By choosing the more-than-100-tweets users, we get 250 or more users,
+then use the loop to find the 10-th gap followers, get 25926 users in this subnetwork
+which called network_tmp1, is suitable for next move. 
