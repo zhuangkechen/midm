@@ -129,9 +129,16 @@ if __name__ == "__main__":
     rdd_dif_mid = dif_file.flatMap(lambda line: split_dif_mid(line))
 
     rdd_tweet_feature = tweets_file.flatMap(lambda line: split_tweets_feature(line))
-    rdd_dif_compute = rdd_dif_mid.leftOuterJoin(rdd_tweet_feature)\
+    
+    # add the cT and the cU into features. and return the link as the key.
+    # "link\t" "uid->mid->rtuid->time->hours->cT->cU->dif" 
+    rdd_dif_link = rdd_dif_mid.leftOuterJoin(rdd_tweet_feature)\
             .flatMap(lambda line: resplit_tweets_feature(line))
 
+    # add the cT and the cU into features. and return the link as the key.
+    # "link\t" "uid->mid->rtuid->time->hours->cT->cU->dif" 
+    rdd_dif_link = rdd_dif_mid.leftOuterJoin(rdd_tweet_feature)\
+            .flatMap(lambda line: resplit_tweets_feature(line))
 
 
 
