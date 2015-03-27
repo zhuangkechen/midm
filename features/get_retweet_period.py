@@ -67,10 +67,10 @@ if __name__ == "__main__":
     sc = SparkContext(conf=conf)
 
     network_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/network_tmp2"
-    tweets_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/tweets_tmp2"
-    #tweets_path = "hdfs://node06:9000/user/function/mb_analysis/choosen2011Gaddafi"
-    #output_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/retweet_periods_2011"
-    output_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/retweet_periods"
+    #tweets_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/tweets_tmp2"
+    tweets_path = "hdfs://node06:9000/user/function/mb_analysis/choosen2011Gaddafi"
+    output_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/retweet_periods_2011"
+    #output_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/retweet_periods"
 
     tweets_file = sc.textFile(tweets_path)
     network_file = sc.textFile(network_path)

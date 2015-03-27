@@ -1,0 +1,6 @@
+
+the final count is :0
+now the real dif counts is 5744
+now the real dif counts is 6020
+the final count is :5744
+the final count is :6020

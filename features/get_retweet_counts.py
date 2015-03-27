@@ -4,6 +4,15 @@ from pyspark import SparkContext, SparkConf
 
 def split_retweet_from(line):
     new_line = line.split("|#|")
+    the_uid = None
+    for words in new_line :
+        if words.split(":")[0] == "uid" :
+            the_uid = words.split(":")[1].split("\t")[0].split("$")[0]
+    if the_uid != None :
+        yield (the_uid, 1)
+
+def split_retweet_to(line):
+    new_line = line.split("|#|")
     rt_uid = None
     for words in new_line :
         if words.split(":")[0] == "rtUid" :
@@ -21,7 +30,7 @@ def split_retweet_full(line):
         if words.split(":")[0] == "rtUid" :
             rt_uid = words.split(":")[1].split("\t")[0].split("$")[0]
     if rt_uid != None :
-        tmp_str = "%s->%s" % (the_uid, rt_uid)
+        tmp_str = "%s->%s" % (rt_uid, the_uid) #changed 2015-03-25
         yield (tmp_str, 1)
 
 def split_users(line):
@@ -58,9 +67,9 @@ def resplit_result(words):
     s_count = words[1][0][1]
     t_count = words[1][1]
     the_retweets = 0
-    if t_count == None :
+    if t_count == None or s_count == None :
         the_retweets = 0
-    if t_count == 0 or s_count == 0 :
+    elif t_count == 0 or s_count == 0 :
         the_retweets = 0
     else :
         the_retweets = s_count / (t_count * 1.0)
@@ -91,7 +100,7 @@ if __name__ == "__main__":
 
     network_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/network_tmp2"
     tweets_path = "hdfs://node06:9000/user/function/mb_analysis/choosen2011Gaddafi"
-    retweets_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/user_retweet_2011_count"
+    retweets_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/user_retweet_2011_from"
 
     tweets_file = sc.textFile(tweets_path)
     network_file = sc.textFile(network_path)
