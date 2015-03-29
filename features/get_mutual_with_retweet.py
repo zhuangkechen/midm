@@ -66,7 +66,7 @@ if __name__ == "__main__":
     print "\n\n"
     rdd_mutual = mutual_file.flatMap(lambda line: split_mutual(line))
     rdd_tweet_counts = retweets_file.flatMap(lambda line: split_users(line))
-    rdd_result = rdd_tweet_counts.leftOuterJoine(rdd_mutual)\
+    rdd_result = rdd_tweet_counts.leftOuterJoin(rdd_mutual)\
             .flatMap(lambda words: resplit_users(words))
     stop_rdd = rdd_result.coalesce(1)
     stop_rdd.saveAsTextFile(output_path)

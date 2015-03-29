@@ -22,6 +22,15 @@ def split_tweets_feature(line) :
     tmp_str = "%d->%d" % (cT, cU)
     yield (mid, tmp_str)
 
+def split_count_mutual(line) :
+    new_line = line.split("->")
+    link = new_line[0]
+    counts = new_line[1]
+    mutual = new_line[2]
+    new_line = line.split("|#|")
+    tmp_str = "%s->%s" % (counts, mutual)
+    yield (link, tmp_str)
+    
 def resplit_tweets_feature(words) :
     mid = words[0]
     dif_feature = words[1][0]
@@ -29,7 +38,6 @@ def resplit_tweets_feature(words) :
     if tweet_feature == None :
         tweet_feature = "0->0"
     dif = dif_feature.split("->")[-1]
-    tmp_str_1 = "%d->%d" % (cT, cU)
     tmp_str = dif_feature[:(len(dif_feature)-1)]
     tmp_str = tmp_str + tweet_feature + "->" + dif
     # get the link
@@ -38,43 +46,19 @@ def resplit_tweets_feature(words) :
     tmp_link = "%s->%s" % (u1, u2)
     yield (tmp_link, tmp_str)
 
-def split_uid_mid(line):
-    new_line = line.split("|#|")
-    the_uid = ""
-    rt_uid = None
-    rt_mid = ""
-    the_time = ""
-    for words in new_line :
-        if words.split(":")[0] == "time" :
-            the_time = words[5 :]
-
-        if words.split(":")[0] == "mid" :
-            rt_mid = words.split(":")[1]
-
-        if words.split(":")[0] == "rtMid" :
-            rt_mid = words.split(":")[1]
-
-        if words.split(":")[0] == "uid" :
-            the_uid = words.split(":")[1].split("\t")[0].split("$")[0]
-
-    yield (the_uid, (rt_mid, the_time))
-
-def split_tweet_dif(words) :
-    msg = words[0].split("->")
-    the_uid = msg[0]
-    rt_mid = msg[1]
-    rt_uid = msg[2]
-    the_time = words[1][0]
-    def_1 = words[1][1]
-    dif = 0
-    if def_1 == None :
-        dif = 0
-    else :
-        dif = 1
-    tmp_str  = "%s->%s->%s->%s->%d" % (the_uid, rt_mid, rt_uid, the_time, dif)
-    yield (tmp_str)
-
-
+def resplit_uid_feature(words) :
+    link = words[0]
+    dif_feature = words[1][0]
+    link_feature = words[1][1]
+    if link_feature == None :
+        link_feature = "0->0"
+    dif = dif_feature.split("->")[-1]
+    tmp_str = dif_feature[:(len(dif_feature)-1)]
+    tmp_str = tmp_str + link_feature + "->" + dif
+    # get the link
+    u1 = link.split("->")[0]
+    yield (u1, tmp_str)
+    
 def split_users(line):
     new_line = line.split("'")
     yield (new_line[1], new_line[3])
@@ -107,9 +91,9 @@ if __name__ == "__main__":
 
     user_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/user_follow_tweet_count"
     network_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/network_tmp2"
-    mutual_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/network_mutual"
+    #mutual_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/network_mutual"
     tweets_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/tweets_tmp2"
-    retweet_count_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/user_retweet_2011_from"
+    retweet_count_mutual_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/user_retweet_count_with_mutual"
     retweet_period_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/retweet_periods_2011"
     # here goes the output_path
     output_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/features_allin1"
@@ -118,9 +102,9 @@ if __name__ == "__main__":
 
     user_file = sc.textFile(user_path)
     network_file = sc.textFile(network_path)
-    mutual_file = sc.textFile(mutual_path)
+    #mutual_file = sc.textFile(mutual_path)
     tweets_file = sc.textFile(tweets_path)
-    retweet_count_file = sc.textFile(retweet_count_path)
+    retweet_count_mutual_file = sc.textFile(retweet_count_mutual_path)
     retweet_period_file= sc.textFile(retweet_period_path)
 
     dif_file = sc.textFile(dif_path)
@@ -135,11 +119,13 @@ if __name__ == "__main__":
     rdd_dif_link = rdd_dif_mid.leftOuterJoin(rdd_tweet_feature)\
             .flatMap(lambda line: resplit_tweets_feature(line))
 
-    # add the cT and the cU into features. and return the link as the key.
-    # "link\t" "uid->mid->rtuid->time->hours->cT->cU->dif" 
-    rdd_dif_link = rdd_dif_mid.leftOuterJoin(rdd_tweet_feature)\
-            .flatMap(lambda line: resplit_tweets_feature(line))
+    rdd_uid_feature = retweet_count_mutual_file..flatMap(lambda line: split_count_mutual(line))
+    # add the sI and the sF into features. and return the userid as the key.
+    # "link\t" "uid->mid->rtuid->time->hours->cT->cU->sI->sF->dif" 
+    rdd_dif_uid = rdd_dif_link.leftOuterJoin(rdd_uid_feature)\
+            .flatMap(lambda line: resplit_uid_feature(line))
 
+    
 
 
 
