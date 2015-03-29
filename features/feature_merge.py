@@ -119,13 +119,18 @@ if __name__ == "__main__":
     rdd_dif_link = rdd_dif_mid.leftOuterJoin(rdd_tweet_feature)\
             .flatMap(lambda line: resplit_tweets_feature(line))
 
+    rdd_link_feature = retweet_count_mutual_file..flatMap(lambda line: split_count_mutual(line))
+    # add the sI and the sF into features. and return the userid as the key.
+    # "uid\t" "uid->mid->rtuid->time->hours->cT->cU->sI->sF->dif" 
+    rdd_dif_uid = rdd_dif_link.leftOuterJoin(rdd_link_feature)\
+            .flatMap(lambda line: resplit_uid_feature(line))
+
     rdd_uid_feature = retweet_count_mutual_file..flatMap(lambda line: split_count_mutual(line))
     # add the sI and the sF into features. and return the userid as the key.
-    # "link\t" "uid->mid->rtuid->time->hours->cT->cU->sI->sF->dif" 
+    # "uid\t" "uid->mid->rtuid->time->hours->cT->cU->sI->sF->dif" 
     rdd_dif_uid = rdd_dif_link.leftOuterJoin(rdd_uid_feature)\
             .flatMap(lambda line: resplit_uid_feature(line))
 
-    
 
 
 
