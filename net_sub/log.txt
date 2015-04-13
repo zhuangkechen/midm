@@ -1,0 +1,9 @@
+
+all the users found in retweets in 2010-01 to 2010-10 count is 12349558
+the links in retweet network  count is 27750794
+all the users found in retweets in 2010-01 to 2010-10 count is 2508005
+the links in retweet network  count is 34597399
+
+the links in retweet network  count is 8303257
+the links in network  count is 8303257
+the links in network  count is 10349740

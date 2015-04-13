@@ -1,10 +1,15 @@
 import sys
 
 from pyspark import SparkContext, SparkConf
-def split_start(line):
-    words = line.split("->")
-    if words[-1] == "1" :
-        yield(words[0], 1)
+
+
+def split_link(line):
+    new_line = line.split()
+    yield (new_line[0], new_line[1])
+
+def split_start(word):
+    if word[1] == 2 :
+        yield (word[0])
 
 def reduce_cunc(a, b):
     if a!=0 and b!=0 :
@@ -23,10 +28,15 @@ if __name__ == "__main__":
     conf = SparkConf().setAppName(appName).setMaster(master)
     sc = SparkContext(conf=conf)
 
-    check_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/retweet_dif_with_time_hours"
+    network_path = "hdfs://node06:9000/user/function/mb_analysis/new_network_analysis/network_tmp1"
+    output_path = "hdfs://node06:9000/user/function/mb_analysis/new_network_analysis/network_tmp2"
 
-    check_file = sc.textFile(check_path)
+    network_file = sc.textFile(network_path)
 
+
+    rdd_links = network_file.flatMap(lambda line: split_link(line))
+
+    rdd_result = rdd_links
 
     # Here start the job
     print "######################################################\n"
@@ -35,12 +45,11 @@ if __name__ == "__main__":
     print "######################################################\n"
     print "######################################################\n"
     print "\n\n\n"
-    rdd_check = check_file.flatMap(lambda line: split_start(line))
-    counts = rdd_check.count()
-    tmp_str = "\nthe final count is :%d" % (counts)
+    stop_rdd = rdd_result.coalesce(1)
+    the_counts = stop_rdd.count()
+    stop_rdd.saveAsTextFile(output_path)
+    tmp_str = "\nthe links in network  count is %d" % (the_counts)
     log_write(tmp_str)
-    print tmp_str
-
     print "****************************************************\n"
     print "Here is the last step\n"
     print "****************************************************\n"

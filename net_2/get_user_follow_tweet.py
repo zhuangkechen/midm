@@ -22,11 +22,21 @@ def split_period(line):
     the_period = "%s||%s||%s||%s||%s||%s" % (i[0], i[1], i[2], i[3], i[4], i[5])
     yield (uid, the_period)
 
+def split_one(words):
+    yield (1, words[1])
+
 def reduce_cunc(a, b):
-    if a!=0 and b!=0 :
+    if a!=None and b!=None :
         return a+b
 
-def resplit_users(words):
+def reduce_max(a, b):
+    if a!=None and b!=None :
+        if a > b :
+            return a
+        else :
+            return b
+
+def resplit_users(words, follow_max):
     uid = words[0]
     follows = words[1][0]
     tweets = words[1][1]
@@ -34,7 +44,7 @@ def resplit_users(words):
     if follows == None :
         follows = 0
     else :
-        follows = int(follows)/1000.0
+        follows = int(follows)/(follow_max*1.0)
         if follows > 1 :
             follows = 1.0
     if tweets == None :
@@ -69,10 +79,10 @@ if __name__ == "__main__":
     sc = SparkContext(conf=conf)
 
 
-    tweets_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/tweets_tmp2"
-    network_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/network_tmp2"
-    period_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/retweet_periods_2011"
-    output_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/user_follow_tweet_period"
+    tweets_path = "hdfs://node06:9000/user/function/mb_analysis/new_network_analysis/tweets_tmp2"
+    network_path = "hdfs://node06:9000/user/function/mb_analysis/new_network_analysis/network_tmp2"
+    period_path = "hdfs://node06:9000/user/function/mb_analysis/new_network_analysis/retweet_periods_2011"
+    output_path = "hdfs://node06:9000/user/function/mb_analysis/new_network_analysis/user_follow_tweet_period"
 
     network_file = sc.textFile(network_path)
     tweets_file = sc.textFile(tweets_path)
@@ -90,14 +100,17 @@ if __name__ == "__main__":
     print "****************************************************\n"
     print "\n\n"
     rdd_follow = network_file.flatMap(lambda line: split_users(line))\
-            .reduceByKey(lambda a,b: reduce_cunc(a,b))
+            .reduceByKey(lambda a,b: reduce_cunc(a,b), 1)
+    rdd_f_max = rdd_follow.flatMap(lambda line: split_one(line))\
+            .reduceByKey(lambda a,b: reduce_max(a,b), 1)
     rdd_tweets = tweets_file.flatMap(lambda line: split_tweets_users(line))\
-            .reduceByKey(lambda a,b: reduce_cunc(a,b))
+            .reduceByKey(lambda a,b: reduce_cunc(a,b), 1)
     rdd_period = period_file.flatMap(lambda line: split_period(line))
 
-    rdd_result = rdd_follow.leftOuterJoin(rdd_tweets)\
-            .flatMap(lambda words: resplit_users(words))\
-            .leftOuterJoin(rdd_period)\
+    follow_max = int(rdd_f_max.collectAsMap()[1])
+    rdd_result = rdd_follow.leftOuterJoin(rdd_tweets, 1)\
+            .flatMap(lambda words: resplit_users(words, follow_max))\
+            .leftOuterJoin(rdd_period, 1)\
             .flatMap(lambda words: resplit_all(words))
     stop_rdd = rdd_result.coalesce(1)
     stop_rdd.saveAsTextFile(output_path)

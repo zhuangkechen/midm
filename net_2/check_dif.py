@@ -2,10 +2,9 @@ import sys
 
 from pyspark import SparkContext, SparkConf
 def split_start(line):
-    words = line.split("|#|")
-    for word in words :
-        if word.split(":")[0] == "eventList" :
-            yield (words[1], 1)
+    words = line.split("->")
+    if words[-1] == "1" :
+        yield(words[0], 1)
 
 def reduce_cunc(a, b):
     if a!=0 and b!=0 :
@@ -24,7 +23,7 @@ if __name__ == "__main__":
     conf = SparkConf().setAppName(appName).setMaster(master)
     sc = SparkContext(conf=conf)
 
-    check_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/tweets_tmp2"
+    check_path = "hdfs://node06:9000/user/function/mb_analysis/new_network_analysis/retweet_dif_with_time_hours"
 
     check_file = sc.textFile(check_path)
 
@@ -38,7 +37,9 @@ if __name__ == "__main__":
     print "\n\n\n"
     rdd_check = check_file.flatMap(lambda line: split_start(line))
     counts = rdd_check.count()
-    print "the final count is :%d" % (counts)
+    tmp_str = "\nthe final dif count is :%d" % (counts)
+    log_write(tmp_str)
+    print tmp_str
 
     print "****************************************************\n"
     print "Here is the last step\n"

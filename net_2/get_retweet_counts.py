@@ -4,12 +4,14 @@ from pyspark import SparkContext, SparkConf
 
 def split_retweet_from(line):
     new_line = line.split("|#|")
-    the_uid = None
+    the_uid = []
     for words in new_line :
         if words.split(":")[0] == "uid" :
-            the_uid = words.split(":")[1].split("\t")[0].split("$")[0]
-    if the_uid != None :
-        yield (the_uid, 1)
+            uids = words.split(":")[1].split("\t")
+            for i in uids :
+                the_uid.append(i.split("$")[0])
+    for i in the_uid :
+        yield (i, 1)
 
 def split_retweet_to(line):
     new_line = line.split("|#|")
@@ -23,15 +25,22 @@ def split_retweet_to(line):
 def split_retweet_full(line):
     new_line = line.split("|#|")
     rt_uid = None
-    the_uid = None
+    the_uid = []
     for words in new_line :
         if words.split(":")[0] == "uid" :
-            the_uid = words.split(":")[1].split("\t")[0].split("$")[0]
+            uids = words.split(":")[1].split("\t")
+            for i in uids :
+                the_uid.append(i.split("$")[0])
         if words.split(":")[0] == "rtUid" :
             rt_uid = words.split(":")[1].split("\t")[0].split("$")[0]
+
     if rt_uid != None :
-        tmp_str = "%s->%s" % (rt_uid, the_uid) #changed 2015-03-25
+        tmp_str = "%s->%s" % (rt_uid, the_uid[-1]) #changed 2015-03-25
         yield (tmp_str, 1)
+        if len(the_uid) >= 2 :
+            for i in range(0, len(the_uid)-2) :
+                tmp_str = "%s->%s" % (the_uid[i+1], the_uid[i]) #changed 2015-03-25
+                yield (tmp_str, 1)
 
 def split_users(line):
     new_line = line.split("'")
@@ -82,7 +91,7 @@ def split_start(word):
         yield (word[1][1])
 
 def reduce_cunc(a, b):
-    if a!=0 and b!=0 :
+    if a!=None and b!=None :
         return a+b
 
 def log_write(counts):
@@ -98,22 +107,22 @@ if __name__ == "__main__":
     conf = SparkConf().setAppName(appName).setMaster(master)
     sc = SparkContext(conf=conf)
 
-    network_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/network_tmp2"
-    tweets_path = "hdfs://node06:9000/user/function/mb_analysis/choosen2011Gaddafi"
-    retweets_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/user_retweet_2011_from"
+    network_path = "hdfs://node06:9000/user/function/mb_analysis/new_network_analysis/network_tmp2"
+    tweets_path = "hdfs://node06:9000/user/function/mb_analysis/choosen2011tweets"
+    retweets_path = "hdfs://node06:9000/user/function/mb_analysis/new_network_analysis/user_retweet_2011_from"
 
     tweets_file = sc.textFile(tweets_path)
     network_file = sc.textFile(network_path)
 
     rdd_network = network_file.flatMap(lambda line: split_relations(line))\
-            .reduceByKey(lambda a,b: reduce_cunc(a, b))
+            .reduceByKey(lambda a,b: reduce_cunc(a, b), 1)
     rdd_users= network_file.flatMap(lambda line: split_users(line))\
-            .reduceByKey(lambda a,b: reduce_cunc(a, b))
+            .reduceByKey(lambda a,b: reduce_cunc(a, b), 1)
 
     rdd_retweet_from = tweets_file.flatMap(lambda line: split_retweet_from(line))\
-            .reduceByKey(lambda a,b: reduce_cunc(a, b))
+            .reduceByKey(lambda a,b: reduce_cunc(a, b), 1)
     rdd_retweet_full = tweets_file.flatMap(lambda line: split_retweet_full(line))\
-            .reduceByKey(lambda a,b: reduce_cunc(a, b))
+            .reduceByKey(lambda a,b: reduce_cunc(a, b), 1)
 
     # Here start the job
     print "######################################################\n"
@@ -126,7 +135,7 @@ if __name__ == "__main__":
     print "Here to get the User From Retweet counts!\n"
     print "****************************************************\n"
     print "\n\n"
-    rdd_from = rdd_users.leftOuterJoin(rdd_retweet_from)\
+    rdd_from = rdd_users.leftOuterJoin(rdd_retweet_from, )\
             .flatMap(lambda words: resplit_users(words))
     print "****************************************************\n"
     print "Here to get the User Full Retweet counts!\n"

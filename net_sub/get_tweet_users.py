@@ -2,18 +2,20 @@ import sys
 
 from pyspark import SparkContext, SparkConf
 
-def split_func(line):
+def split_uid_mid(line):
     new_line = line.split("|#|")
     for words in new_line :
+        if words.split(":")[0] == "time" :
+            the_time = words.split(":")[1].split("-")
+            if the_time[0] != "2011" :
+                break
+            if int(the_time[1]) > 10 :
+                break
         if words.split(":")[0] == "uid" :
-            the_uid = words.split(":")[1].split("\t")[0].split("$")[0]
-            yield (the_uid, line)
-            break
-
-def split_users(line):
-    new_line = line.split("'")
-    yield (new_line[1], 1)
-    yield (new_line[3], 1)
+            the_uid = words.split(":")[1].split("\t")
+            for uids in the_uid :
+                uid = uids.split("$")
+                yield (uid[0], 1)
 
 
 def split_start(word):
@@ -36,16 +38,15 @@ if __name__ == "__main__":
     master = "spark://node06:7077"
     conf = SparkConf().setAppName(appName).setMaster(master)
     sc = SparkContext(conf=conf)
-    tweets_path = "hdfs://node06:9000/user/function/mb_analysis/choosenTweetsGaddafi"
-    network_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/network_tmp2"
-    output_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/tweets_tmp2"
+
+    tweets_path = "hdfs://node06:9000/user/function/rawdata/microblogs/sortedmicroblogs.txt"
+    output_path_1 = "hdfs://node06:9000/user/function/mb_analysis/2011-01_to_10_users"
+
     tweets_file = sc.textFile(tweets_path)
-    network_file = sc.textFile(network_path)
-    rdd_tweets = tweets_file.flatMap(lambda line: split_func(line))
-    rdd_network = network_file.flatMap(lambda line: split_users(line))\
+
+    rdd_result = tweets_file.flatMap(lambda line: split_uid_mid(line))\
             .reduceByKey(lambda a,b: reduce_cunc(a,b))
-    rdd_result = rdd_network.leftOuterJoin(rdd_tweets)\
-            .flatMap(lambda line: split_start(line))
+
 
     # Here start the job
     print "######################################################\n"
@@ -55,7 +56,10 @@ if __name__ == "__main__":
     print "######################################################\n"
     print "\n\n\n"
     stop_rdd = rdd_result.coalesce(1)
-    stop_rdd.saveAsTextFile(output_path)
+    the_counts = stop_rdd.count()
+    stop_rdd.saveAsTextFile(output_path_1)
+    tmp_str = "\nall the users found in retweets in 2010-01 to 2010-10 count is %d" % (the_counts)
+    log_write(tmp_str)
     print "****************************************************\n"
     print "Here is the last step\n"
     print "****************************************************\n"

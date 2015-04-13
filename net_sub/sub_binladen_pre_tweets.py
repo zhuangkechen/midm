@@ -1,10 +1,27 @@
 import sys
 
 from pyspark import SparkContext, SparkConf
-def split_start(line):
-    words = line.split("->")
-    if words[-1] == "1" :
-        yield(line)
+
+def split_func(line):
+    new_line = line.split("|#|")
+    for words in new_line :
+        if words.split(":")[0] == "time" :
+            the_time = words.split(":")[1].split()[0]
+            month = the_time.split("-")[1]
+            day = the_time.split("-")[2]
+            if month == "04" or int(day) <= 2 :
+                yield (line)
+                break
+
+def split_users(line):
+    new_line = line.split("'")
+    yield (new_line[1], 1)
+    yield (new_line[3], 1)
+
+
+def split_start(word):
+    if word[1][1] != None :
+        yield (word[1][1])
 
 def reduce_cunc(a, b):
     if a!=0 and b!=0 :
@@ -22,12 +39,10 @@ if __name__ == "__main__":
     master = "spark://node06:7077"
     conf = SparkConf().setAppName(appName).setMaster(master)
     sc = SparkContext(conf=conf)
-
-    check_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/retweet_dif_with_time_hours"
-    output_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/retweet_dif_sample"
-
-    check_file = sc.textFile(check_path)
-
+    tweets_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/binladen_tweets"
+    output_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/binladen_tweets_pre"
+    tweets_file = sc.textFile(tweets_path)
+    rdd_tweets = tweets_file.flatMap(lambda line: split_func(line))
 
     # Here start the job
     print "######################################################\n"
@@ -36,10 +51,7 @@ if __name__ == "__main__":
     print "######################################################\n"
     print "######################################################\n"
     print "\n\n\n"
-    rdd_result = check_file.flatMap(lambda line: split_start(line))
-
-
-    stop_rdd = rdd_result.coalesce(1)
+    stop_rdd = rdd_tweets.coalesce(1)
     stop_rdd.saveAsTextFile(output_path)
     print "****************************************************\n"
     print "Here is the last step\n"

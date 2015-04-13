@@ -1,0 +1,504 @@
+DecisionTreeModel classifier of depth 1 with 3 nodes
+  If (feature 7 <= 0.0)
+   Predict: 0.0
+  Else (feature 7 > 0.0)
+   Predict: 1.0
+DecisionTreeModel classifier of depth 1 with 3 nodes
+  If (feature 7 <= 0.0)
+   Predict: 0.0
+  Else (feature 7 > 0.0)
+   Predict: 1.0
+DecisionTreeModel classifier of depth 9 with 329 nodes
+  If (feature 7 <= 0.0)
+   If (feature 1 <= 0.07514)
+    If (feature 0 <= 0.0)
+     If (feature 4 <= 0.0)
+      If (feature 5 <= 0.0)
+       Predict: 0.0
+      Else (feature 5 > 0.0)
+       Predict: 0.0
+     Else (feature 4 > 0.0)
+      If (feature 5 <= 0.0)
+       Predict: 0.0
+      Else (feature 5 > 0.0)
+       Predict: 0.0
+    Else (feature 0 > 0.0)
+     If (feature 1 <= 0.02527)
+      If (feature 1 <= 0.00205)
+       If (feature 0 <= 0.167)
+        If (feature 0 <= 0.01)
+         If (feature 0 <= 0.008)
+          If (feature 0 <= 0.007)
+           Predict: 0.0
+          Else (feature 0 > 0.007)
+           Predict: 0.0
+         Else (feature 0 > 0.008)
+          If (feature 6 <= 0.16364)
+           Predict: 0.0
+          Else (feature 6 > 0.16364)
+           Predict: 0.0
+        Else (feature 0 > 0.01)
+         If (feature 6 <= 0.04167)
+          If (feature 0 <= 0.016)
+           Predict: 0.0
+          Else (feature 0 > 0.016)
+           Predict: 0.0
+         Else (feature 6 > 0.04167)
+          If (feature 6 <= 0.07759)
+           Predict: 0.0
+          Else (feature 6 > 0.07759)
+           Predict: 0.0
+       Else (feature 0 > 0.167)
+        If (feature 0 <= 0.495)
+         If (feature 6 <= 0.16364)
+          If (feature 6 <= 0.0)
+           Predict: 0.0
+          Else (feature 6 > 0.0)
+           Predict: 0.0
+         Else (feature 6 > 0.16364)
+          If (feature 6 <= 0.17424)
+           Predict: 0.0
+          Else (feature 6 > 0.17424)
+           Predict: 0.0
+        Else (feature 0 > 0.495)
+         If (feature 6 <= 0.13668)
+          Predict: 0.0
+         Else (feature 6 > 0.13668)
+          If (feature 1 <= 0.00137)
+           Predict: 0.0
+          Else (feature 1 > 0.00137)
+           Predict: 0.0
+      Else (feature 1 > 0.00205)
+       If (feature 1 <= 0.0123)
+        If (feature 1 <= 0.01161)
+         If (feature 1 <= 0.00751)
+          If (feature 6 <= 0.19639)
+           Predict: 0.0
+          Else (feature 6 > 0.19639)
+           Predict: 0.0
+         Else (feature 1 > 0.00751)
+          If (feature 0 <= 0.495)
+           Predict: 0.0
+          Else (feature 0 > 0.495)
+           Predict: 0.0
+        Else (feature 1 > 0.01161)
+         If (feature 6 <= 0.19639)
+          If (feature 0 <= 0.167)
+           Predict: 0.0
+          Else (feature 0 > 0.167)
+           Predict: 0.0
+         Else (feature 6 > 0.19639)
+          If (feature 6 <= 0.20896)
+           Predict: 0.0
+          Else (feature 6 > 0.20896)
+           Predict: 0.0
+       Else (feature 1 > 0.0123)
+        If (feature 0 <= 0.167)
+         If (feature 0 <= 0.023)
+          If (feature 6 <= 0.20896)
+           Predict: 0.0
+          Else (feature 6 > 0.20896)
+           Predict: 0.0
+         Else (feature 0 > 0.023)
+          If (feature 6 <= 0.17424)
+           Predict: 0.0
+          Else (feature 6 > 0.17424)
+           Predict: 0.0
+        Else (feature 0 > 0.167)
+         If (feature 6 <= 0.20896)
+          If (feature 6 <= 0.16364)
+           Predict: 0.0
+          Else (feature 6 > 0.16364)
+           Predict: 0.0
+         Else (feature 6 > 0.20896)
+          If (feature 0 <= 0.994)
+           Predict: 0.0
+          Else (feature 0 > 0.994)
+           Predict: 0.0
+     Else (feature 1 > 0.02527)
+      If (feature 0 <= 0.495)
+       If (feature 1 <= 0.03825)
+        If (feature 4 <= 0.0)
+         If (feature 6 <= 0.03125)
+          If (feature 6 <= 0.0303)
+           Predict: 0.0
+          Else (feature 6 > 0.0303)
+           Predict: 0.0
+         Else (feature 6 > 0.03125)
+          If (feature 6 <= 0.22047)
+           Predict: 0.0
+          Else (feature 6 > 0.22047)
+           Predict: 0.0
+        Else (feature 4 > 0.0)
+         If (feature 0 <= 0.06)
+          If (feature 5 <= 0.0)
+           Predict: 0.0
+          Else (feature 5 > 0.0)
+           Predict: 0.0
+         Else (feature 0 > 0.06)
+          If (feature 6 <= 0.0)
+           Predict: 0.0
+          Else (feature 6 > 0.0)
+           Predict: 0.0
+       Else (feature 1 > 0.03825)
+        If (feature 0 <= 0.06)
+         If (feature 6 <= 0.0)
+          If (feature 0 <= 0.023)
+           Predict: 0.0
+          Else (feature 0 > 0.023)
+           Predict: 0.0
+         Else (feature 6 > 0.0)
+          If (feature 4 <= 0.0)
+           Predict: 0.0
+          Else (feature 4 > 0.0)
+           Predict: 0.0
+        Else (feature 0 > 0.06)
+         If (feature 6 <= 0.25641)
+          If (feature 1 <= 0.06421)
+           Predict: 0.0
+          Else (feature 1 > 0.06421)
+           Predict: 0.0
+         Else (feature 6 > 0.25641)
+          If (feature 1 <= 0.06421)
+           Predict: 0.0
+          Else (feature 1 > 0.06421)
+           Predict: 0.0
+      Else (feature 0 > 0.495)
+       If (feature 6 <= 0.18237)
+        If (feature 1 <= 0.05191)
+         If (feature 6 <= 0.17424)
+          If (feature 4 <= 0.0)
+           Predict: 0.0
+          Else (feature 4 > 0.0)
+           Predict: 0.0
+         Else (feature 6 > 0.17424)
+          If (feature 4 <= 0.0)
+           Predict: 0.0
+          Else (feature 4 > 0.0)
+           Predict: 0.0
+        Else (feature 1 > 0.05191)
+         If (feature 4 <= 0.0)
+          If (feature 6 <= 0.11765)
+           Predict: 0.0
+          Else (feature 6 > 0.11765)
+           Predict: 0.0
+         Else (feature 4 > 0.0)
+          If (feature 0 <= 0.994)
+           Predict: 0.0
+          Else (feature 0 > 0.994)
+           Predict: 0.0
+       Else (feature 6 > 0.18237)
+        If (feature 6 <= 0.25641)
+         If (feature 6 <= 0.20896)
+          If (feature 5 <= 0.0)
+           Predict: 0.0
+          Else (feature 5 > 0.0)
+           Predict: 0.0
+         Else (feature 6 > 0.20896)
+          If (feature 1 <= 0.05191)
+           Predict: 0.0
+          Else (feature 1 > 0.05191)
+           Predict: 0.0
+        Else (feature 6 > 0.25641)
+         If (feature 1 <= 0.03825)
+          If (feature 5 <= 0.0)
+           Predict: 0.0
+          Else (feature 5 > 0.0)
+           Predict: 0.0
+         Else (feature 1 > 0.03825)
+          If (feature 1 <= 0.06421)
+           Predict: 0.0
+          Else (feature 1 > 0.06421)
+           Predict: 0.0
+   Else (feature 1 > 0.07514)
+    If (feature 0 <= 0.994)
+     If (feature 6 <= 0.02857)
+      If (feature 4 <= 0.0)
+       If (feature 0 <= 0.017)
+        If (feature 0 <= 0.016)
+         If (feature 0 <= 0.004)
+          If (feature 1 <= 0.08811)
+           Predict: 0.0
+          Else (feature 1 > 0.08811)
+           Predict: 0.0
+         Else (feature 0 > 0.004)
+          If (feature 1 <= 0.10178)
+           Predict: 0.0
+          Else (feature 1 > 0.10178)
+           Predict: 0.0
+        Else (feature 0 > 0.016)
+         If (feature 6 <= 0.0)
+          Predict: 0.0
+         Else (feature 6 > 0.0)
+          If (feature 1 <= 0.15096)
+           Predict: 1.0
+          Else (feature 1 > 0.15096)
+           Predict: 0.0
+       Else (feature 0 > 0.017)
+        If (feature 6 <= 0.02128)
+         If (feature 0 <= 0.06)
+          If (feature 5 <= 0.0)
+           Predict: 0.0
+          Else (feature 5 > 0.0)
+           Predict: 0.0
+         Else (feature 0 > 0.06)
+          If (feature 0 <= 0.495)
+           Predict: 0.0
+          Else (feature 0 > 0.495)
+           Predict: 0.0
+        Else (feature 6 > 0.02128)
+         If (feature 6 <= 0.02174)
+          If (feature 5 <= 0.0)
+           Predict: 0.0
+          Else (feature 5 > 0.0)
+           Predict: 0.0
+         Else (feature 6 > 0.02174)
+          If (feature 1 <= 0.08811)
+           Predict: 0.0
+          Else (feature 1 > 0.08811)
+           Predict: 0.0
+      Else (feature 4 > 0.0)
+       If (feature 6 <= 0.02273)
+        Predict: 0.0
+       Else (feature 6 > 0.02273)
+        If (feature 1 <= 0.08811)
+         If (feature 0 <= 0.023)
+          Predict: 0.0
+         Else (feature 0 > 0.023)
+          Predict: 1.0
+        Else (feature 1 > 0.08811)
+         Predict: 0.0
+     Else (feature 6 > 0.02857)
+      If (feature 6 <= 0.22047)
+       If (feature 0 <= 0.167)
+        If (feature 1 <= 0.15096)
+         If (feature 0 <= 0.005)
+          If (feature 0 <= 0.004)
+           Predict: 0.0
+          Else (feature 0 > 0.004)
+           Predict: 0.0
+         Else (feature 0 > 0.005)
+          If (feature 0 <= 0.016)
+           Predict: 0.0
+          Else (feature 0 > 0.016)
+           Predict: 0.0
+        Else (feature 1 > 0.15096)
+         If (feature 1 <= 0.35724)
+          If (feature 0 <= 0.023)
+           Predict: 0.0
+          Else (feature 0 > 0.023)
+           Predict: 0.0
+         Else (feature 1 > 0.35724)
+          If (feature 6 <= 0.18237)
+           Predict: 0.0
+          Else (feature 6 > 0.18237)
+           Predict: 0.0
+       Else (feature 0 > 0.167)
+        If (feature 1 <= 0.35724)
+         If (feature 1 <= 0.21858)
+          If (feature 1 <= 0.10178)
+           Predict: 0.0
+          Else (feature 1 > 0.10178)
+           Predict: 0.0
+         Else (feature 1 > 0.21858)
+          If (feature 5 <= 0.0)
+           Predict: 0.0
+          Else (feature 5 > 0.0)
+           Predict: 0.0
+        Else (feature 1 > 0.35724)
+         If (feature 6 <= 0.11765)
+          If (feature 0 <= 0.495)
+           Predict: 0.0
+          Else (feature 0 > 0.495)
+           Predict: 0.0
+         Else (feature 6 > 0.11765)
+          If (feature 6 <= 0.20896)
+           Predict: 0.0
+          Else (feature 6 > 0.20896)
+           Predict: 0.0
+      Else (feature 6 > 0.22047)
+       If (feature 1 <= 0.15096)
+        If (feature 0 <= 0.495)
+         If (feature 0 <= 0.017)
+          If (feature 0 <= 0.016)
+           Predict: 0.0
+          Else (feature 0 > 0.016)
+           Predict: 0.0
+         Else (feature 0 > 0.017)
+          If (feature 1 <= 0.10178)
+           Predict: 0.0
+          Else (feature 1 > 0.10178)
+           Predict: 0.0
+        Else (feature 0 > 0.495)
+         If (feature 1 <= 0.10178)
+          If (feature 1 <= 0.08811)
+           Predict: 0.0
+          Else (feature 1 > 0.08811)
+           Predict: 0.0
+         Else (feature 1 > 0.10178)
+          If (feature 6 <= 0.25641)
+           Predict: 0.0
+          Else (feature 6 > 0.25641)
+           Predict: 0.0
+       Else (feature 1 > 0.15096)
+        If (feature 4 <= 0.0)
+         If (feature 0 <= 0.023)
+          If (feature 1 <= 0.35724)
+           Predict: 0.0
+          Else (feature 1 > 0.35724)
+           Predict: 0.0
+         Else (feature 0 > 0.023)
+          If (feature 0 <= 0.167)
+           Predict: 0.0
+          Else (feature 0 > 0.167)
+           Predict: 0.0
+        Else (feature 4 > 0.0)
+         If (feature 6 <= 0.25641)
+          If (feature 0 <= 0.167)
+           Predict: 0.0
+          Else (feature 0 > 0.167)
+           Predict: 0.0
+         Else (feature 6 > 0.25641)
+          If (feature 0 <= 0.495)
+           Predict: 0.0
+          Else (feature 0 > 0.495)
+           Predict: 0.0
+    Else (feature 0 > 0.994)
+     If (feature 1 <= 0.29508)
+      If (feature 1 <= 0.15096)
+       If (feature 6 <= 0.11765)
+        If (feature 6 <= 0.07759)
+         If (feature 1 <= 0.08811)
+          If (feature 5 <= 0.0)
+           Predict: 0.0
+          Else (feature 5 > 0.0)
+           Predict: 0.0
+         Else (feature 1 > 0.08811)
+          If (feature 1 <= 0.10178)
+           Predict: 0.0
+          Else (feature 1 > 0.10178)
+           Predict: 0.0
+        Else (feature 6 > 0.07759)
+         If (feature 1 <= 0.10178)
+          If (feature 5 <= 0.0)
+           Predict: 0.0
+          Else (feature 5 > 0.0)
+           Predict: 0.0
+         Else (feature 1 > 0.10178)
+          If (feature 5 <= 0.0)
+           Predict: 0.0
+          Else (feature 5 > 0.0)
+           Predict: 0.0
+       Else (feature 6 > 0.11765)
+        If (feature 6 <= 0.18237)
+         If (feature 6 <= 0.16783)
+          If (feature 1 <= 0.08811)
+           Predict: 0.0
+          Else (feature 1 > 0.08811)
+           Predict: 0.0
+         Else (feature 6 > 0.16783)
+          If (feature 5 <= 0.0)
+           Predict: 0.0
+          Else (feature 5 > 0.0)
+           Predict: 0.0
+        Else (feature 6 > 0.18237)
+         If (feature 5 <= 0.0)
+          If (feature 1 <= 0.10178)
+           Predict: 0.0
+          Else (feature 1 > 0.10178)
+           Predict: 0.0
+         Else (feature 5 > 0.0)
+          If (feature 6 <= 0.22047)
+           Predict: 0.0
+          Else (feature 6 > 0.22047)
+           Predict: 0.0
+      Else (feature 1 > 0.15096)
+       If (feature 6 <= 0.07759)
+        If (feature 1 <= 0.21858)
+         If (feature 1 <= 0.17486)
+          If (feature 5 <= 0.0)
+           Predict: 0.0
+          Else (feature 5 > 0.0)
+           Predict: 0.0
+         Else (feature 1 > 0.17486)
+          If (feature 5 <= 0.0)
+           Predict: 0.0
+          Else (feature 5 > 0.0)
+           Predict: 0.0
+        Else (feature 1 > 0.21858)
+         If (feature 6 <= 0.02857)
+          Predict: 0.0
+         Else (feature 6 > 0.02857)
+          If (feature 5 <= 0.0)
+           Predict: 0.0
+          Else (feature 5 > 0.0)
+           Predict: 0.0
+       Else (feature 6 > 0.07759)
+        If (feature 6 <= 0.15556)
+         If (feature 6 <= 0.1497)
+          If (feature 5 <= 0.0)
+           Predict: 0.0
+          Else (feature 5 > 0.0)
+           Predict: 0.0
+         Else (feature 6 > 0.1497)
+          If (feature 1 <= 0.21858)
+           Predict: 0.0
+          Else (feature 1 > 0.21858)
+           Predict: 0.0
+        Else (feature 6 > 0.15556)
+         If (feature 6 <= 0.17424)
+          If (feature 5 <= 0.0)
+           Predict: 0.0
+          Else (feature 5 > 0.0)
+           Predict: 0.0
+         Else (feature 6 > 0.17424)
+          If (feature 6 <= 0.19639)
+           Predict: 0.0
+          Else (feature 6 > 0.19639)
+           Predict: 0.0
+     Else (feature 1 > 0.29508)
+      If (feature 6 <= 0.25641)
+       If (feature 5 <= 0.0)
+        If (feature 6 <= 0.20896)
+         If (feature 6 <= 0.0)
+          Predict: 0.0
+         Else (feature 6 > 0.0)
+          If (feature 1 <= 0.35724)
+           Predict: 0.0
+          Else (feature 1 > 0.35724)
+           Predict: 0.0
+        Else (feature 6 > 0.20896)
+         If (feature 6 <= 0.22047)
+          If (feature 1 <= 0.35724)
+           Predict: 0.0
+          Else (feature 1 > 0.35724)
+           Predict: 0.0
+         Else (feature 6 > 0.22047)
+          Predict: 0.0
+       Else (feature 5 > 0.0)
+        If (feature 1 <= 0.35724)
+         If (feature 4 <= 0.0)
+          If (feature 6 <= 0.11765)
+           Predict: 0.0
+          Else (feature 6 > 0.11765)
+           Predict: 0.0
+         Else (feature 4 > 0.0)
+          Predict: 0.0
+        Else (feature 1 > 0.35724)
+         If (feature 6 <= 0.16364)
+          Predict: 0.0
+         Else (feature 6 > 0.16364)
+          If (feature 6 <= 0.16783)
+           Predict: 0.0
+          Else (feature 6 > 0.16783)
+           Predict: 0.0
+      Else (feature 6 > 0.25641)
+       If (feature 5 <= 0.0)
+        If (feature 1 <= 0.35724)
+         Predict: 0.0
+        Else (feature 1 > 0.35724)
+         Predict: 0.0
+       Else (feature 5 > 0.0)
+        Predict: 0.0
+  Else (feature 7 > 0.0)
+   Predict: 1.0

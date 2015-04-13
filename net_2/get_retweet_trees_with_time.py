@@ -5,10 +5,11 @@ from pyspark import SparkContext, SparkConf
 
 def split_uid_mid(line):
     new_line = line.split("|#|")
-    the_uid = ""
+    the_uid = []
     rt_uid = None
     rt_mid = ""
     the_time = ""
+    rt_time = None
     for words in new_line :
         if words.split(":")[0] == "time" :
             the_time = words[5 :]
@@ -20,13 +21,29 @@ def split_uid_mid(line):
             rt_mid = words.split(":")[1]
 
         if words.split(":")[0] == "uid" :
+            uids = words.split(":")[1].split("\t")
+            for i in uids :
+                the_uid.append(i.split("$")[0])
+
+        if words.split(":")[0] == "rtUid" :
             the_uid = words.split(":")[1].split("\t")[0].split("$")[0]
 
-    yield (the_uid, (rt_mid, the_time))
+        if words.split(":")[0] == "rtTime" :
+            rt_time = words[5 :]
+    yield (the_uid[0], (rt_mid, the_time))
+    if rt_uid != None and rt_time !=None :
+        if len(the_uid) > 1 :
+            t1 = datetime.strptime(rt_time, "%Y-%m-%d %H:%M:%S")
+            t2 = datetime.strptime(the_time, "%Y-%m-%d %H:%M:%S")
+            dt = (t2-t1)/len(the_uid)
+            for i in range(1, len(the_uid)-1) :
+                tmp_time = datetime.strftime((t2-dt*i), "%Y-%m-%d %H:%M:%S")
+                yield (the_uid[i], (rt_mid, tmp_time))
+
 
 def split_retweets(line):
     new_line = line.split("|#|")
-    the_uid = ""
+    the_uid = []
     rt_uid = None
     rt_mid = ""
     the_time = ""
@@ -44,7 +61,9 @@ def split_retweets(line):
             rt_mid = words.split(":")[1]
 
         if words.split(":")[0] == "uid" :
-            the_uid = words.split(":")[1].split("\t")[0].split("$")[0]
+            uids = words.split(":")[1].split("\t")
+            for i in uids :
+                the_uid.append(i.split("$")[0])
 
         if words.split(":")[0] == "rtUid" :
             rt_uid = words.split(":")[1].split("\t")[0].split("$")[0]
@@ -54,8 +73,14 @@ def split_retweets(line):
         hours = (t2-t1).total_seconds()/3600
         hours = round(hours, 2)
 
-    if rt_uid != None :
-        yield (rt_uid, (rt_mid, the_uid, hours))
+    if rt_uid != None and len(the_uid) == 1 :
+        yield (rt_uid, (rt_mid, the_uid[0], 0))
+
+    if rt_uid != None and rt_time !=None and len(the_uid) > 1 :
+        tmp_hour = hours/len(the_uid)
+        for i in range(0, len(the_uid)-2) :
+            yield (the_uid[i+1], (rt_mid, the_uid[i], tmp_hour))
+        yield (rt_uid, (rt_mid, the_uid[-1], 0))
 
 def split_dif_0(words, dif) :
     the_uid = words[0]
@@ -115,7 +140,7 @@ def split_start(word):
         yield (word[1][1])
 
 def reduce_cunc(a, b):
-    if a!=0 and b!=0 :
+    if a!=None and b!=None :
         return a+b
 
 def log_write(counts):
@@ -131,9 +156,9 @@ if __name__ == "__main__":
     conf = SparkConf().setAppName(appName).setMaster(master)
     sc = SparkContext(conf=conf)
 
-    network_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/network_tmp2"
-    tweets_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/tweets_tmp2"
-    output_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/retweet_dif_with_time_hours"
+    network_path = "hdfs://node06:9000/user/function/mb_analysis/new_network_analysis/network_tmp2"
+    tweets_path = "hdfs://node06:9000/user/function/mb_analysis/new_network_analysis/tweets_tmp2"
+    output_path = "hdfs://node06:9000/user/function/mb_analysis/new_network_analysis/retweet_dif_with_time_hours"
 
     tweets_file = sc.textFile(tweets_path)
     network_file = sc.textFile(network_path)

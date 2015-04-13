@@ -1,0 +1,71 @@
+This is the 1-th loop, and the network now have 324842 users!!!!!!!!!!!!!!!!!!
+This is the 2-th loop, and the network now have 403393 users!!!!!!!!!!!!!!!!!!
+This is the 3-th loop, and the network now have 417585 users!!!!!!!!!!!!!!!!!!
+This is the 4-th loop, and the network now have 419713 users!!!!!!!!!!!!!!!!!!
+This is the 5-th loop, and the network now have 419965 users!!!!!!!!!!!!!!!!!!
+This is the 6-th loop, and the network now have 419986 users!!!!!!!!!!!!!!!!!!
+This is the 7-th loop, and the network now have 419988 users!!!!!!!!!!!!!!!!!!
+This is the 8-th loop, and the network now have 419988 users!!!!!!!!!!!!!!!!!!
+***  The count not increase now, BREAKING NOW ****
+This is the 1-th loop, and the network now have 768503 users!!!!!!!!!!!!!!!!!!
+This is the 2-th loop, and the network now have 1143018 users!!!!!!!!!!!!!!!!!!
+This is the 3-th loop, and the network now have 1200059 users!!!!!!!!!!!!!!!!!!
+This is the 4-th loop, and the network now have 1206214 users!!!!!!!!!!!!!!!!!!
+This is the 5-th loop, and the network now have 1206448 users!!!!!!!!!!!!!!!!!!
+This is the 6-th loop, and the network now have 1206453 users!!!!!!!!!!!!!!!!!!
+This is the 7-th loop, and the network now have 1206454 users!!!!!!!!!!!!!!!!!!
+This is the 8-th loop, and the network now have 1206454 users!!!!!!!!!!!!!!!!!!
+***  The count not increase now, BREAKING NOW ****
+
+now the real dif counts is 10229
+the final dif count is :10229
+now the real dif counts is 5659
+the check same count is :0
+the check same count is :0
+the check same count is :0
+the check same count is :1
+the check same count is :1
+the check same count is :566641
+the check same count is :254589
+the check unsame count is :24621
+the check same count is :254589
+the check same count is :141803
+the check same count is :0
+the check same count is :0
+the check unsame count is :279210
+the check same count is :0
+the check unsame count is :707482
+the check same count is :498972
+the check unsame count is :279210
+the check same count is :0
+the check unsame count is :745491
+the check same count is :460963
+the check unsame count is :1206454
+the check same count is :0
+the check unsame count is :13579723
+the check same count is :351
+the check same count is :351
+the check same count is :0
+the check same count is :0
+now the real dif counts is 2252
+the check same count is :0
+the links in retweet network  count is 18334919
+the check same count is :0
+the check same count is :0
+now the real dif counts is 161
+now the real dif counts is 0
+now the real dif counts is 84
+now the real dif counts is 172
+the retweet links in 2010-09 to 10 retweet network  count is 0
+the check same count is :0
+the check same count is :0
+now the real dif counts is 74767
+the check same count is :0
+now the real dif counts is 46470
+the retweet links in 2011-07 to 08 retweet network  count is 10436686
+the check same count is :0
+now the real dif counts is 61694total_count of features all is 49714050total_count of features all is 49714050total_count of features all is 49714050total_count of features all is 49714050total_count of features all is 49714050
+the check same count is :0
+now the real dif counts is 57190total_count of features all is 30223141
+the check same count is :0
+now the real dif counts is 47248
