@@ -138,7 +138,7 @@ if __name__ == "__main__":
                  .reduceByKey(lambda a,b: reduce_svm(a,b))
 
     rdd_result = rdd_features.leftOuterJoin(rdd_tweets)\
-                 .flatMap(lambda line: resplit_tweets_feature(words))
+                 .flatMap(lambda words: resplit_tweets_feature(words))
 
     #rdd_dif_libsvm = rdd_dif.flatMap(lambda line: resplit_libsvm(line))
 
