@@ -2,25 +2,60 @@ import sys
 
 from pyspark import SparkContext, SparkConf
 
-def split_tweets_feature(line) :
+
+def split_retweets(line):
     new_line = line.split("|#|")
-    cT = 0
-    cU = 0
-    mid = ""
+    the_uid = []
+    rt_uid = None
+    rt_mid = ""
+    the_time = ""
+    rt_time= None
+    hours = 0
     for words in new_line :
-        if words.split(":")[0] == "eventList" :
-            cT = 1
-        if words.split(":")[0] == "isContainLink" :
-            if words.split(":")[1] != "false" :
-                cU = 1
+        if words.split(":")[0] == "time" :
+            the_time = words[5 :]
+        if words.split(":")[0] == "rtTime" :
+            rt_time = words[7 :]
         if words.split(":")[0] == "mid" :
-            mid = words.split(":")[1]
-    tmp_str = "%d->%d" % (cT, cU)
-    yield (mid, tmp_str)
+            rt_mid = words.split(":")[1]
+
+        if words.split(":")[0] == "rtMid" :
+            rt_mid = words.split(":")[1]
+
+        if words.split(":")[0] == "uid" :
+            uids = words.split(":")[1].split("\t")
+            for i in uids :
+                the_uid.append(i.split("$")[0])
+
+        if words.split(":")[0] == "rtUid" :
+            rt_uid = words.split(":")[1].split("\t")[0].split("$")[0]
+    if rt_time !=None :
+        t1 = datetime.strptime(rt_time, "%Y-%m-%d %H:%M:%S")
+        t2 = datetime.strptime(the_time, "%Y-%m-%d %H:%M:%S")
+        hours = (t2-t1).total_seconds()/3600
+        hours = round(hours, 2)
+
+    if rt_uid != None and len(the_uid) == 1 :
+        tmp_str = "%s->%s->%s" % (rt_uid, mid, the_uid[0])
+        yield (tmp_str, hours)
+
+    if rt_uid != None and rt_time !=None and len(the_uid) > 1 :
+        tmp_hour = hours/len(the_uid)
+        for i in range(0, len(the_uid)-2) :
+            tmp_str = "%s->%s->%s" % (the_uid[i+1], mid, the_uid[i])
+            yield (tmp_str, hours)
+        tmp_str = "%s->%s->%s" % (rt_uid, mid, the_uid[-1])
+        yield (tmp_str, hours)
+
+
 def resplit_libsvm(line) :
     #    0    1      2     3      4   5   6   7   8   9  10  11  12
-    # "uid->mid->rtuid->time->hours->cT->cU->sI->sF->sP->sT->tP>dif"
+    # "rtuid->mid->uid->time->hours->cT->cU->sI->sF->sP->sT->tP>dif"
     words = line.split("->")
+    rt_uid = words[0]
+    mid = words[1]
+    uid = words[2]
+    #
     dif = words[12]
     sP = words[9]
     sT = words[10]
@@ -33,12 +68,14 @@ def resplit_libsvm(line) :
     ##
     tmp_str = "%s\t1:%s\t2:%s\t3:%s\t4:%s\t5:%s\t6:%s\t7:%s\t8:%s" % \
             (dif, sP, sT, sI, sF, cT, cU, tP, tD)
-    yield (tmp_str)
+    tmp_str_1 = "%s->%s->%s" % (rt_uid, mid, uid)
+    yield (tmp_str_1, tmp_str)
+
 def split_users(line):
     new_line = line.split("'")
     yield (new_line[1], new_line[3])
 
-def split_check(line):
+def resplit_tweets_feature(words):
     new_line = line.split("->")
     if new_line[-1] == "1" :
         yield (new_line[0], 1)
@@ -48,8 +85,24 @@ def split_start(word):
         yield (word[1][1])
 
 def reduce_cunc(a, b):
-    if a!=0 and b!=0 :
+    if a!=None and b!=None :
         return a+b
+
+def reduce_small(a, b):
+    if a!=None and b!=None :
+        if a > b:
+            return b
+        else :
+            return a
+
+def reduce_svm(a, b):
+    if a!=None and b!=None :
+        tD_a = float(a.split()[8])
+        tD_b = float(b.split()[8])
+        if tD_a > tD_b:
+            return b
+        else :
+            return a
 
 def log_write(counts):
     f = open("log.txt", 'a')
@@ -64,43 +117,22 @@ if __name__ == "__main__":
     conf = SparkConf().setAppName(appName).setMaster(master)
     sc = SparkContext(conf=conf)
 
-    #user_path = "hdfs://node06:9000/user/function/mb_analysis/new_network_analysis/user_follow_tweet_count"
-    network_path = "hdfs://node06:9000/user/function/mb_analysis/new_network_analysis/network_tmp2"
-    tweets_path = "hdfs://node06:9000/user/function/mb_analysis/new_network_analysis/tweets_tmp2"
+    tweets_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/tweets_tmp2"
     #
-    retweet_count_mutual_path = "hdfs://node06:9000/user/function/mb_analysis/new_network_analysis/user_retweet_count_with_mutual"
-    #
-    user_ft_period_path = "hdfs://node06:9000/user/function/mb_analysis/new_network_analysis/user_follow_tweet_period"
     # here goes the output_path
-    output_path = "hdfs://node06:9000/user/function/mb_analysis/new_network_analysis/features_allin1"
-    libsvm_path = "hdfs://node06:9000/user/function/mb_analysis/new_network_analysis/features_libsvm"
-    # here is the dif total path
-    dif_path = "hdfs://node06:9000/user/function/mb_analysis/new_network_analysis/retweet_dif_with_time_hours"
+    features_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/features_allin1"
 
-    #user_file = sc.textFile(user_path)
-    network_file = sc.textFile(network_path)
-    #mutual_file = sc.textFile(mutual_path)
     tweets_file = sc.textFile(tweets_path)
-    retweet_count_mutual_file = sc.textFile(retweet_count_mutual_path)
-    user_ft_period_file = sc.textFile(user_ft_period_path)
-
-    dif_file = sc.textFile(dif_path)
+    features_file = sc.textFile(features_path)
 
     # get the rdds
-    rdd_dif_mid = dif_file.flatMap(lambda line: split_dif_mid(line))
+    rdd_tweets = tweets_file.flatMap(lambda line: split_retweets(line))\
+                 .reduceByKey(lambda a,b: reduce_small(a,b))
+    rdd_features = features_file.flatMap(lambda line: resplit_libsvm(line))\
+                 .reduceByKey(lambda a,b: reduce_svm(a,b))
 
-    rdd_tweet_feature = tweets_file.flatMap(lambda line: split_tweets_feature(line))
-
-    # add the cT and the cU into features. and return the link as the key.
-    # "link\t" "uid->mid->rtuid->time->hours->cT->cU->dif"
-    rdd_dif_link = rdd_dif_mid.leftOuterJoin(rdd_tweet_feature)\
-            .flatMap(lambda line: resplit_tweets_feature(line))
-
-    rdd_link_feature = retweet_count_mutual_file.flatMap(lambda line: split_count_mutual(line))
-    # add the sI and the sF into features. and return the userid as the key.
-    # "uid\t" "uid->mid->rtuid->time->hours->cT->cU->sI->sF->dif"
-    rdd_dif_uid = rdd_dif_link.leftOuterJoin(rdd_link_feature)\
-            .flatMap(lambda line: resplit_link_feature(line))
+    rdd_result = rdd_features.leftOuterJoin(rdd_tweets)\
+                 .flatMap(lambda line: resplit_tweets_feature(words))
 
     rdd_uid_feature = user_ft_period_file.flatMap(lambda line: split_users(line))
     # add the sP, sT and tP into features. and return the total.

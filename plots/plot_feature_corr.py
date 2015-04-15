@@ -1,7 +1,7 @@
-from bokeh.plotting import *
+import numpy as np
+import matplotlib.pyplot as plt
 import sys, os, random
 
-colors = "0123456789ABCDEF"
 x_data = []
 y_data = []
 xLable = ""
@@ -12,8 +12,8 @@ testX = [1,2,3,4,5,6]
 testY = [1,2,3,4,5,6]
 def readFile(f):
     for line in f.readlines():
-        xi = int(line.split()[0])
-        yi = int(line.split()[1])
+        xi = line.split()[0]
+        yi = float(line.split()[1])*(10**4)
         x_data.append(xi)
         y_data.append(yi)
 
@@ -27,26 +27,25 @@ def x_data_to_day():
         x_data[i] = int(x_data[i]/24)
 
 def plot(savename, keyword, xLable, yLable):
-    htmlname = "%s.html" % (savename)
-    lengend_name = keyword.replace("_", " ")
-    output_file(htmlname, title=lengend_name)
+    fig = plt.figure(figsize=(7,4))
+    ax = fig.add_subplot(111)
+    fig.tight_layout(pad=3)
+    #
+    x_pos = range(len(x_data))
+    #plt.barh(y_data, x_pos,  align='center', alpha=0.4)
+    plt.bar(x_pos, y_data, align='center', width=0.4)
+    plt.xticks(x_pos, x_data)
+    plt.ylabel(yLable)
+    #plt.title(keyword)
 
+    plt.savefig(savename)
+    plt.show()
+    #
 
-    tmp_color = "#"
-    for i in range(0, 6):
-        j = random.randint(0, len(colors)-1)
-        tmp_color = tmp_color+colors[j]
-    p = figure(plot_width=1000, plot_height=500, title="Topics temporal dynamics")
-    p.xaxis.axis_label = xLable
-    p.yaxis.axis_label = yLable
-    p.line(x_data, y_data, color=tmp_color, line_width=2, legend=lengend_name)
-    #save(p)
-    show(p)
-    #save(p)
 
 def main():
     if len(sys.argv) != 6 :
-        print "Error\nUsage:\n plots.py [filename] [savename] [lengendname] [xLable] [yLable]"
+        print "Error\nUsage:\n plots.py [filename] [savename] [title] [xLable] [yLable]"
         return
     f = open(sys.argv[1])
     savename = sys.argv[2]
@@ -55,7 +54,7 @@ def main():
     yLable = sys.argv[5]
     readFile(f)
     #x_data_to_day() #change the data from hourtime to daytime form
-    x_data_change()
+    #x_data_change()
     plot(savename, keyword, xLable, yLable)
     f.close()
 
