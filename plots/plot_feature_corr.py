@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 
 # Example data
-people = ('Tom', 'Dick', 'Harry', 'Slim', 'Jim')
+people =
 y_pos = np.arange(len(people))
 performance = 3 + 10 * np.random.rand(len(people))
 error = np.random.rand(len(people))
