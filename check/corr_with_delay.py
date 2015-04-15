@@ -76,9 +76,13 @@ def split_users(line):
     yield (new_line[1], new_line[3])
 
 def resplit_tweets_feature(words):
-    new_line = line.split("->")
-    if new_line[-1] == "1" :
-        yield (new_line[0], 1)
+    the_ids = words[0]
+    features = words[1][0]
+    delays = words[1][1]
+    if features == None or delays == None :
+        return
+    tmp_str = "%s\t%s" % (features, delays)
+    yield (tmp_str)
 
 def split_start(word):
     if word[1][1] != None :
@@ -121,6 +125,7 @@ if __name__ == "__main__":
     #
     # here goes the output_path
     features_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/features_allin1"
+    output_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/delay_libsvm"
 
     tweets_file = sc.textFile(tweets_path)
     features_file = sc.textFile(features_path)
@@ -133,12 +138,6 @@ if __name__ == "__main__":
 
     rdd_result = rdd_features.leftOuterJoin(rdd_tweets)\
                  .flatMap(lambda line: resplit_tweets_feature(words))
-
-    rdd_uid_feature = user_ft_period_file.flatMap(lambda line: split_users(line))
-    # add the sP, sT and tP into features. and return the total.
-    # "uid->mid->rtuid->time->hours->cT->cU->sI->sF-sP->sT->tP>dif"
-    rdd_dif= rdd_dif_uid.leftOuterJoin(rdd_uid_feature)\
-            .flatMap(lambda line: resplit_final(line))
 
     #rdd_dif_libsvm = rdd_dif.flatMap(lambda line: resplit_libsvm(line))
 
@@ -157,9 +156,7 @@ if __name__ == "__main__":
     #log_write(tmp_str)
 
 
-    rdd_result = rdd_dif
-    #stop_rdd = rdd_result.coalesce(1)
-    stop_rdd = rdd_result
+    stop_rdd = rdd_result.coalesce(1)
     stop_rdd.saveAsTextFile(output_path)
     #stop_rdd = rdd_dif_libsvm.coalesce(1)
     #stop_rdd.saveAsTextFile(libsvm_path)
