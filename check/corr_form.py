@@ -16,7 +16,7 @@ def resplit_libsvm(line) :
     tP = float(words[7].split(":")[1])
     tD = float(words[8].split(":")[1])
 
-    real_delay = float(words[8])
+    real_delay = float(words[9])
     ##
     if dif == 1:
         yield ("sP", real_delay*sP )
