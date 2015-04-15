@@ -101,8 +101,8 @@ def reduce_small(a, b):
 
 def reduce_svm(a, b):
     if a!=None and b!=None :
-        tD_a = float(a.split()[8])
-        tD_b = float(b.split()[8])
+        tD_a = float(a.split()[8].split(":")[1])
+        tD_b = float(b.split()[8].split(":")[1])
         if tD_a > tD_b:
             return b
         else :
