@@ -37,15 +37,15 @@ def split_retweets(line):
         hours = round(hours, 2)
 
     if rt_uid != None and len(the_uid) == 1 :
-        tmp_str = "%s->%s->%s" % (rt_uid, mid, the_uid[0])
+        tmp_str = "%s->%s->%s" % (rt_uid, rt_mid, the_uid[0])
         yield (tmp_str, hours)
 
     if rt_uid != None and rt_time !=None and len(the_uid) > 1 :
         tmp_hour = hours/len(the_uid)
         for i in range(0, len(the_uid)-2) :
-            tmp_str = "%s->%s->%s" % (the_uid[i+1], mid, the_uid[i])
+            tmp_str = "%s->%s->%s" % (the_uid[i+1], rt_mid, the_uid[i])
             yield (tmp_str, hours)
-        tmp_str = "%s->%s->%s" % (rt_uid, mid, the_uid[-1])
+        tmp_str = "%s->%s->%s" % (rt_uid, rt_mid, the_uid[-1])
         yield (tmp_str, hours)
 
 
