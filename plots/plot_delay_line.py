@@ -25,12 +25,13 @@ def readFile(f):
         x_data.append(xi)
         y_data.append(yi)
 
-def x_data_change():
-    xmin = min(x_data)
-    for i in range(0, len(x_data)):
-        x_data[i] = x_data[i]-xmin
+def log_write(counts):
+    f = open("log.txt", 'a')
+    f.write(counts)
+    f.close()
 
-def plot(savename):
+
+def plot(dataname, savename):
     fig = plt.figure(figsize=(7,4))
     ax = fig.add_subplot(111)
     fig.tight_layout(pad=3)
@@ -44,6 +45,9 @@ def plot(savename):
 
     r = t[0][0]
     c = t[1][0]
+    tmp_str = "the formula is: Y = %.2f*X + %.2f, from data: %s, plot in: %s.\n"\
+              % (r, c, dataname, savename)
+    log_write(tmp_str)
     x_ = x_data
     y_ = [r*a+c for a in x_data]
     ax.plot(x_,y_,"b-")
@@ -64,7 +68,7 @@ def main():
     readFile(f)
 
 
-    plot(savename)
+    plot(sys.argv[1], savename)
     f.close()
 
 if __name__ == "__main__":
