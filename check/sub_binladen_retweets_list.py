@@ -49,6 +49,11 @@ def resplit_libsvm(line) :
     #    0    1      2     3      4   5   6   7   8   9  10  11  12
     # "uid->mid->rtuid->time->hours->cT->cU->sI->sF->sP->sT->tP>dif"
     words = line.split("->")
+    uid = words[0]
+    mid = words[1]
+    rt_uid = words[2]
+
+    #
     dif = words[12]
     sP = words[9]
     sT = words[10]
@@ -61,7 +66,14 @@ def resplit_libsvm(line) :
     ##
     tmp_str = "%s\t1:%s\t2:%s\t3:%s\t4:%s\t5:%s\t6:%s\t7:%s\t8:%s" % \
             (dif, sP, sT, sI, sF, cT, cU, tP, tD)
-    yield (tmp_str)
+    tmp_id = "%s->%s->%s" % (uid, mid, rt_uid)
+    yield (tmp_id, tmp_str)
+
+def resplit_sub_features(words) :
+    tmp_id = words[0]
+    tmp_time = words[1][0]
+    tmp_features = words[1][1]
+    yield ()
 
 def split_users(line):
     new_line = line.split("'")
@@ -102,7 +114,14 @@ if __name__ == "__main__":
     features_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/features_allin1"
     output_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/binladen_retweets_after"
     tweets_file = sc.textFile(tweets_path)
-    rdd_tweets = tweets_file.flatMap(lambda line: split_retweets(line))
+    features_file = sc.textFile(features_path)
+    rdd_retweets = tweets_file.flatMap(lambda line: split_retweets(line))\
+                   .reduceByKey(lambda a,b: reduce_time(a,b))
+
+    rdd_features = features_file.flatMap(lambda line: resplit_libsvm(line))
+
+    rdd_sub_features = rdd_retweets.leftOuterJoin(rdd_features)\
+                       .flatMap(lambda words: resplit_sub_features(words))
 
     # Here start the job
     print "######################################################\n"
