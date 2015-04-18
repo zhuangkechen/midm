@@ -41,21 +41,23 @@ def split_retweets(line):
                 tmp_str = "%s->%s->%s" % (the_uid[i], rt_mid, the_uid[i-1])
                 yield (tmp_str, tmp_time)
 
-
-def split_func(line):
-    new_line = line.split("|#|")
-    checked = False
-    for words in new_line :
-        if words.split(":")[0] == "time" :
-            the_time = words.split(":")[1].split()[0]
-            month = the_time.split("-")[1]
-            day = the_time.split("-")[2]
-            if month == "05" and int(day) >= 2 :
-              checked = True
-        if words.split(":")[0] == "rtUid" :
-          if checked :
-            yield (line)
-                
+def resplit_libsvm(line) :
+    #    0    1      2     3      4   5   6   7   8   9  10  11  12
+    # "uid->mid->rtuid->time->hours->cT->cU->sI->sF->sP->sT->tP>dif"
+    words = line.split("->")
+    dif = words[12]
+    sP = words[9]
+    sT = words[10]
+    sI = words[7]
+    sF = words[8]
+    cT = words[5]
+    cU = words[6]
+    tP = words[11]
+    tD = words[4]
+    ##
+    tmp_str = "%s\t1:%s\t2:%s\t3:%s\t4:%s\t5:%s\t6:%s\t7:%s\t8:%s" % \
+            (dif, sP, sT, sI, sF, cT, cU, tP, tD)
+    yield (tmp_str)
 
 def split_users(line):
     new_line = line.split("'")
@@ -93,9 +95,10 @@ if __name__ == "__main__":
     conf = SparkConf().setAppName(appName).setMaster(master)
     sc = SparkContext(conf=conf)
     tweets_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/binladen_tweets"
+    features_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/features_allin1"
     output_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/binladen_retweets_after"
     tweets_file = sc.textFile(tweets_path)
-    rdd_tweets = tweets_file.flatMap(lambda line: split_func(line))
+    rdd_tweets = tweets_file.flatMap(lambda line: split_retweets(line))
 
     # Here start the job
     print "######################################################\n"
