@@ -160,8 +160,7 @@ if __name__ == "__main__":
     rdd_labelFeatures = rdd_sub_features.flatMap(lambda words: resplit_labelFeatures(words, binladen_time))
 
     rdd_time_estimated = rdd_sub_features\
-            .flatMap(lambda words: \
-                     resplit_timeEstimated(words, binladen_time,
+            .flatMap(lambda words: resplit_timeEstimated(words, binladen_time,
                                            formula_a, formula_b))
 
     # Here start the job
