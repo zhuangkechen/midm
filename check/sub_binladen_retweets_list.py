@@ -77,7 +77,7 @@ def resplit_labelFeatures(words, compare_time) :
     features_list = []
     t1 = datetime.strptime(tmp_time, "%Y-%m-%d %H:%M:%S")
     t2 = datetime.strptime(compare_time, "%Y-%m-%d %H:%M:%S")
-    if tmp_features ! =None and t1 > t2:
+    if tmp_features ! =None and t1 > t2 :
         tmp_list = tmp_features.split()
         dif = int(tmp_list[0])
         for i in range(1, len(tmp_list)) :
