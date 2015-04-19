@@ -69,11 +69,33 @@ def resplit_libsvm(line) :
     tmp_id = "%s->%s->%s" % (uid, mid, rt_uid)
     yield (tmp_id, tmp_str)
 
-def resplit_sub_features(words) :
+def resplit_labelFeatures(words, compare_time) :
     tmp_id = words[0]
     tmp_time = words[1][0]
     tmp_features = words[1][1]
-    yield ()
+    dif = 0
+    features_list = []
+    t1 = datetime.strptime(tmp_time, "%Y-%m-%d %H:%M:%S")
+    t2 = datetime.strptime(compare_time, "%Y-%m-%d %H:%M:%S")
+    if tmp_features ! =None and t1 > t2:
+        tmp_list = tmp_features.split()
+        dif = int(tmp_list[0])
+        for i in range(1, len(tmp_list)) :
+            features_list.append(float(tmp_list[i].split(":")[1]))
+        yield (LabeledPoint(dif, features_list))
+
+
+def resplit_timeEstimated(words, compare_time) :
+    tmp_id = words[0]
+    tmp_time = words[1][0]
+    tmp_features = words[1][1]
+    dif = 0
+    features_list = []
+    t1 = datetime.strptime(tmp_time, "%Y-%m-%d %H:%M:%S")
+    t2 = datetime.strptime(compare_time, "%Y-%m-%d %H:%M:%S")
+    if tmp_features ! =None and t1 > t2:
+        tP = float(tmp_features.split()[7].split(":")[1])
+        yield (tmp_time)
 
 def split_users(line):
     new_line = line.split("'")
@@ -95,7 +117,7 @@ def reduce_time(a, b):
         t2 = datetime.strptime(b, "%Y-%m-%d %H:%M:%S")
         if t1 > t2 :
             return b
-        else : 
+        else :
             return a
 
 def log_write(counts):
@@ -113,6 +135,11 @@ if __name__ == "__main__":
     tweets_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/binladen_tweets"
     features_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/features_allin1"
     output_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/binladen_retweets_after"
+
+    # set the compare time
+    binladen_time = "2011-05-02 23:59:59"
+    # the binladen data timedelay formula:
+    #   the formula is: Y = -4.19*X + 4.53, from data: delay_libsvm_0405.txt, plot in: Plot_delay.png.
     tweets_file = sc.textFile(tweets_path)
     features_file = sc.textFile(features_path)
     rdd_retweets = tweets_file.flatMap(lambda line: split_retweets(line))\
@@ -120,8 +147,11 @@ if __name__ == "__main__":
 
     rdd_features = features_file.flatMap(lambda line: resplit_libsvm(line))
 
-    rdd_sub_features = rdd_retweets.leftOuterJoin(rdd_features)\
-                       .flatMap(lambda words: resplit_sub_features(words))
+    rdd_sub_features = rdd_retweets.leftOuterJoin(rdd_features)
+
+    rdd_labelFeatures = rdd_sub_features.flatMap(lambda words: resplit_labelFeatures(words, binladen_time))
+
+    rdd_time_estimated = rdd_sub_features.flatMap(lambda words: resplit_timeEstimated(words, binladen_time))
 
     # Here start the job
     print "######################################################\n"
@@ -135,9 +165,9 @@ if __name__ == "__main__":
     print "****************************************************\n"
     print "Here is the last step\n"
     print "****************************************************\n"
-    
-    
-    
+
+
+
     #Here is the trainning steps.
     training_data = MLUtils.loadLibSVMFile(sc, training_path)
     test_data = MLUtils.loadLibSVMFile(sc, test_path)
