@@ -159,7 +159,7 @@ if __name__ == "__main__":
     sc = SparkContext(conf=conf)
     tweets_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/binladen_tweets"
     features_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/features_allin1"
-    binladen_model_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/mb_analysis/0405_analysis/Model_trained_tmp"
+    binladen_model_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/Model_trained_tmp"
 
     #output paths
     output_real_daycount = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/binladen_real_day_count"
