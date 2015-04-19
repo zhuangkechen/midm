@@ -102,6 +102,26 @@ def resplit_timeEstimated(words, compare_time, formula_a, formula_b) :
         tmp_str = "%s->%s" % (tmp_time, time_estimated)
         yield (tmp_str)
 
+def resplit_predicted_timedelay(words) :
+    dif = words[1]
+    tmp_time = words[0]
+    real_time = tmp_time.split("->")[0]
+    predicted_time = tmp_time.split("->")[1]
+    t1 = datetime.strptime(predicted_time, "%Y-%m-%d %H:%M:%S")
+    tmp_str = "%d-%d" % (t1.month, t1.day)
+    if dif == "1" :
+        yield (tmp_time, 1)
+
+def split_real_time(line):
+    new_line = line.split("|#|")
+    for words in new_line :
+        if words.split(":")[0] == "time" :
+            the_time = words[5 :]
+            t1 = datetime.strptime(the_time, "%Y-%m-%d %H:%M:%S")
+            tmp_str = "%d-%d" % (t1.month, t1.day)
+            yield (tmp_str, 1)
+
+
 def split_users(line):
     new_line = line.split("'")
     yield (new_line[1], 1)
@@ -139,9 +159,11 @@ if __name__ == "__main__":
     sc = SparkContext(conf=conf)
     tweets_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/binladen_tweets"
     features_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/features_allin1"
-    output_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/binladen_retweets_after"
     binladen_model_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/mb_analysis/0405_analysis/Model_trained_tmp"
 
+    #output paths
+    output_real_daycount = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/binladen_real_day_count"
+    output_predicted_daycount = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/binladen_predicted_day_count"
     # set the compare time
     binladen_time = "2011-05-02 23:59:59"
     # the binladen data timedelay formula:
@@ -152,6 +174,15 @@ if __name__ == "__main__":
     features_file = sc.textFile(features_path)
     rdd_retweets = tweets_file.flatMap(lambda line: split_retweets(line))\
                    .reduceByKey(lambda a,b: reduce_time(a,b))
+
+    #######################
+    # save the real day count
+    rdd_real_day_count = tweets_file.flatMap(lambda line: split_real_time(line))\
+                   .reduceByKey(lambda a,b: reduce_cunc(a,b))
+    save_rdd = rdd_real_day_count.coalesce(1)
+    save_rdd.saveAsTextFile(output_real_daycount)
+    # save one finished
+    ######################
 
     rdd_features = features_file.flatMap(lambda line: resplit_libsvm(line))
 
@@ -170,8 +201,8 @@ if __name__ == "__main__":
     print "######################################################\n"
     print "######################################################\n"
     print "\n\n\n"
-    stop_rdd = rdd_tweets.coalesce(1)
-    stop_rdd.saveAsTextFile(output_path)
+    #stop_rdd = rdd_tweets.coalesce(1)
+    #stop_rdd.saveAsTextFile(output_path)
     print "****************************************************\n"
     print "Here is the last step\n"
     print "****************************************************\n"
@@ -192,3 +223,11 @@ if __name__ == "__main__":
     print(tmp_str)
     log_write(tmp_str)
     print "\n\n"
+
+    ## Here start the time delay zip
+    rdd_time_predicted = rdd_time_estimated.zip(predictions)\
+            .flatMap(lambda words: resplit_predicted_timedelay(words))\
+            .reduceByKey(lambda a,b: reduce_cunc(a,b))
+    save_rdd = rdd_real_day_count.coalesce(1)
+    save_rdd.saveAsTextFile(output_predicted_daycount)
+    # the save finished
