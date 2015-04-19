@@ -170,8 +170,8 @@ if __name__ == "__main__":
     print "######################################################\n"
     print "######################################################\n"
     print "\n\n\n"
-    #stop_rdd = rdd_tweets.coalesce(1)
-    #stop_rdd.saveAsTextFile(output_path)
+    stop_rdd = rdd_tweets.coalesce(1)
+    stop_rdd.saveAsTextFile(output_path)
     print "****************************************************\n"
     print "Here is the last step\n"
     print "****************************************************\n"
