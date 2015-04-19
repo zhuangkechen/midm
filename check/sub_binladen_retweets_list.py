@@ -85,7 +85,7 @@ def resplit_labelFeatures(words, compare_time) :
         yield (LabeledPoint(dif, features_list))
 
 
-def resplit_timeEstimated(words, compare_time) :
+def resplit_timeEstimated(words, compare_time, formula_a, formula_b) :
     tmp_id = words[0]
     tmp_time = words[1][0]
     tmp_features = words[1][1]
@@ -95,7 +95,12 @@ def resplit_timeEstimated(words, compare_time) :
     t2 = datetime.strptime(compare_time, "%Y-%m-%d %H:%M:%S")
     if tmp_features ! =None and t1 > t2:
         tP = float(tmp_features.split()[7].split(":")[1])
-        yield (tmp_time)
+        tP = round(tP, 2)
+        t_delta = timedelta(hours=-tP)
+        t3 = t1 + t_delta
+        time_estimated = datetime.strftime(t3, "%Y-%m-%d %H:%M:%S")
+        tmp_str = "%s->%s" % (tmp_time, time_estimated)
+        yield (tmp_str)
 
 def split_users(line):
     new_line = line.split("'")
@@ -140,6 +145,8 @@ if __name__ == "__main__":
     binladen_time = "2011-05-02 23:59:59"
     # the binladen data timedelay formula:
     #   the formula is: Y = -4.19*X + 4.53, from data: delay_libsvm_0405.txt, plot in: Plot_delay.png.
+    formula_a = -4.19
+    formula_b = 4.53
     tweets_file = sc.textFile(tweets_path)
     features_file = sc.textFile(features_path)
     rdd_retweets = tweets_file.flatMap(lambda line: split_retweets(line))\
@@ -151,7 +158,10 @@ if __name__ == "__main__":
 
     rdd_labelFeatures = rdd_sub_features.flatMap(lambda words: resplit_labelFeatures(words, binladen_time))
 
-    rdd_time_estimated = rdd_sub_features.flatMap(lambda words: resplit_timeEstimated(words, binladen_time))
+    rdd_time_estimated = rdd_sub_features\
+            .flatMap(lambda words: \
+                     resplit_timeEstimated(words, binladen_time,
+                                           formula_a, formula_b))
 
     # Here start the job
     print "######################################################\n"
