@@ -93,7 +93,7 @@ def resplit_timeEstimated(words, compare_time, formula_a, formula_b) :
     features_list = []
     t1 = datetime.strptime(tmp_time, "%Y-%m-%d %H:%M:%S")
     t2 = datetime.strptime(compare_time, "%Y-%m-%d %H:%M:%S")
-    if tmp_features ! =None and t1 > t2:
+    if tmp_features !=None and t1 > t2:
         tP = float(tmp_features.split()[7].split(":")[1])
         tP = round(tP, 2)
         t_delta = timedelta(hours=-tP)
