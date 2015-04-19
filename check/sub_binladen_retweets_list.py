@@ -140,6 +140,7 @@ if __name__ == "__main__":
     tweets_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/binladen_tweets"
     features_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/features_allin1"
     output_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/binladen_retweets_after"
+    binladen_model_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/mb_analysis/0405_analysis/Model_trained_tmp"
 
     # set the compare time
     binladen_time = "2011-05-02 23:59:59"
@@ -170,8 +171,8 @@ if __name__ == "__main__":
     print "######################################################\n"
     print "######################################################\n"
     print "\n\n\n"
-    stop_rdd = rdd_tweets.coalesce(1)
-    stop_rdd.saveAsTextFile(output_path)
+    #stop_rdd = rdd_tweets.coalesce(1)
+    #stop_rdd.saveAsTextFile(output_path)
     print "****************************************************\n"
     print "Here is the last step\n"
     print "****************************************************\n"
@@ -179,20 +180,16 @@ if __name__ == "__main__":
 
 
     #Here is the trainning steps.
-    training_data = MLUtils.loadLibSVMFile(sc, training_path)
-    test_data = MLUtils.loadLibSVMFile(sc, test_path)
-    model = DecisionTree.trainClassifier(training_data, numClasses=2, categoricalFeaturesInfo={},\
-                                        impurity='gini', maxDepth=9, maxBins=32)
+    binladen_model = DecisionTreeModel.load(sc, binladen_model_path)
+    #
+    #training_data = MLUtils.loadLibSVMFile(sc, training_path)
+    test_data = rdd_labelFeatures
     # Evaluate model on test instances and compute test error
-    predictions = model.predict(test_data.map(lambda x: x.features))
+    predictions = binladen_model.predict(test_data.map(lambda x: x.features))
+    # test the error value
     labelsAndPredictions = test_data.map(lambda lp: lp.label).zip(predictions)
     testErr = labelsAndPredictions.filter(lambda (v, p): v != p).count() / float(test_data.count())
     tmp_str = 'Test Error = ' + str(testErr)
     print(tmp_str)
     log_write(tmp_str)
-    print('Learned classification tree model:')
-    tmp_str = model.toDebugString()
-    print(tmp_str)
-    log_write(tmp_str)
-    model.save(sc, model_path)
     print "\n\n"
