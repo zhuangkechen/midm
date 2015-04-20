@@ -30,20 +30,26 @@ def split_retweets(line):
                 the_uid.append(i.split("$")[0])
 
         if words.split(":")[0] == "rtUid" :
-            the_uid = words.split(":")[1].split("\t")[0].split("$")[0]
+            rt_uid = words.split(":")[1].split("\t")[0].split("$")[0]
 
         if words.split(":")[0] == "rtTime" :
-            rt_time = words[5 :]
+            rt_time = words[7 :]
     #yield (the_uid[0], (rt_mid, the_time))
     if rt_uid != None and rt_time !=None :
         if len(the_uid) > 1 :
             t1 = datetime.strptime(rt_time, "%Y-%m-%d %H:%M:%S")
             t2 = datetime.strptime(the_time, "%Y-%m-%d %H:%M:%S")
             dt = (t2-t1)/len(the_uid)
-            for i in range(0, len(the_uid)-1) :
+            for i in range(0, len(the_uid)-2) :
                 tmp_time = datetime.strftime((t2-dt*i), "%Y-%m-%d %H:%M:%S")
-                tmp_str = "%s->%s->%s" % (the_uid[i], rt_mid, the_uid[i-1])
+                #tmp_str = "%s->%s->%s" % (the_uid[i+1], rt_mid, the_uid[i])
+                tmp_str = "%s->%s" % (the_uid[i+1], rt_mid)
                 yield (tmp_str, tmp_time)
+        #tmp_str = "%s->%s->%s" % (rt_uid, rt_mid, the_uid[-1])
+        #yield (tmp_str, rt_time)
+        tmp_str = "%s->%s" % (rt_uid, rt_mid)
+        yield (tmp_str, rt_time)
+
 
 def resplit_libsvm(line) :
     #    0    1      2     3      4   5   6   7   8   9  10  11  12
@@ -66,41 +72,44 @@ def resplit_libsvm(line) :
     ##
     tmp_str = "%s\t1:%s\t2:%s\t3:%s\t4:%s\t5:%s\t6:%s\t7:%s\t8:%s" % \
             (dif, sP, sT, sI, sF, cT, cU, tP, tD)
-    tmp_id = "%s->%s->%s" % (uid, mid, rt_uid)
+    tmp_id = "%s->%s" % (uid, mid)
     yield (tmp_id, tmp_str)
 
 def resplit_labelFeatures(words, compare_time) :
     tmp_id = words[0]
-    tmp_time = words[1][0]
-    tmp_features = words[1][1]
-    dif = 0
-    features_list = []
-    t1 = datetime.strptime(tmp_time, "%Y-%m-%d %H:%M:%S")
-    t2 = datetime.strptime(compare_time, "%Y-%m-%d %H:%M:%S")
-    if tmp_features !=None and t1 > t2 :
-        tmp_list = tmp_features.split()
-        dif = int(tmp_list[0])
-        for i in range(1, len(tmp_list)) :
-            features_list.append(float(tmp_list[i].split(":")[1]))
-        yield (LabeledPoint(dif, features_list))
+    tmp_time = words[1][1]
+    tmp_features = words[1][0]
+    if tmp_time !=None :
+        dif = 0
+        features_list = []
+        t1 = datetime.strptime(tmp_time, "%Y-%m-%d %H:%M:%S")
+        t2 = datetime.strptime(compare_time, "%Y-%m-%d %H:%M:%S")
+        if tmp_features !=None and t1 > t2 :
+            tmp_list = tmp_features.split()
+            dif = int(tmp_list[0])
+            for i in range(1, len(tmp_list)) :
+                features_list.append(float(tmp_list[i].split(":")[1]))
+            yield (LabeledPoint(dif, features_list))
 
 
 def resplit_timeEstimated(words, compare_time, formula_a, formula_b) :
     tmp_id = words[0]
-    tmp_time = words[1][0]
-    tmp_features = words[1][1]
-    dif = 0
-    features_list = []
-    t1 = datetime.strptime(tmp_time, "%Y-%m-%d %H:%M:%S")
-    t2 = datetime.strptime(compare_time, "%Y-%m-%d %H:%M:%S")
-    if tmp_features !=None and t1 > t2:
-        tP = float(tmp_features.split()[7].split(":")[1])
-        tP = round(tP, 2)
-        t_delta = timedelta(hours=-tP)
-        t3 = t1 + t_delta
-        time_estimated = datetime.strftime(t3, "%Y-%m-%d %H:%M:%S")
-        tmp_str = "%s->%s" % (tmp_time, time_estimated)
-        yield (tmp_str)
+    tmp_time = words[1][1]
+    tmp_features = words[1][0]
+    if tmp_time !=None :
+        dif = 0
+        features_list = []
+        t1 = datetime.strptime(tmp_time, "%Y-%m-%d %H:%M:%S")
+        t2 = datetime.strptime(compare_time, "%Y-%m-%d %H:%M:%S")
+        if tmp_features !=None and t1 > t2:
+            tP = float(tmp_features.split()[7].split(":")[1])
+            tP = round(tP, 2)
+            estimated_delay = tP * formula_a + formula_b
+            t_delta = timedelta(hours=estimated_delay)
+            t3 = t1 + t_delta
+            time_estimated = datetime.strftime(t3, "%Y-%m-%d %H:%M:%S")
+            tmp_str = "%s->%s" % (tmp_time, time_estimated)
+            yield (tmp_str)
 
 def resplit_predicted_timedelay(words) :
     dif = words[1]
@@ -160,6 +169,8 @@ if __name__ == "__main__":
     tweets_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/binladen_tweets"
     features_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/features_allin1"
     binladen_model_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/Model_trained_tmp"
+    #tmp_out just for test
+    output_tmp_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/binladen_tmp_out"
 
     #output paths
     output_real_daycount = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/binladen_real_day_count"
@@ -174,19 +185,27 @@ if __name__ == "__main__":
     features_file = sc.textFile(features_path)
     rdd_retweets = tweets_file.flatMap(lambda line: split_retweets(line))\
                    .reduceByKey(lambda a,b: reduce_time(a,b))
+    # test output
+    save_rdd = rdd_retweets.coalesce(1)
+    save_rdd.saveAsTextFile(output_tmp_path)
+    # save one finished
 
     #######################
     # save the real day count
-    rdd_real_day_count = tweets_file.flatMap(lambda line: split_real_time(line))\
-                   .reduceByKey(lambda a,b: reduce_cunc(a,b))
-    save_rdd = rdd_real_day_count.coalesce(1)
+    rdd_real_day_count = tweets_file.flatMap(lambda line: split_real_time(line))
+    real_total_count = rdd_real_day_count.count()
+
+    save_rdd = rdd_real_day_count.reduceByKey(lambda a,b: reduce_cunc(a,b))\
+            .coalesce(1)
     save_rdd.saveAsTextFile(output_real_daycount)
+    tmp_str = "\nNow the real total count is %s" % (real_total_count)
+    log_write(tmp_str)
     # save one finished
     ######################
 
     rdd_features = features_file.flatMap(lambda line: resplit_libsvm(line))
 
-    rdd_sub_features = rdd_retweets.leftOuterJoin(rdd_features)
+    rdd_sub_features = rdd_features.leftOuterJoin(rdd_retweets)
 
     rdd_labelFeatures = rdd_sub_features.flatMap(lambda words: resplit_labelFeatures(words, binladen_time))
 
@@ -226,8 +245,11 @@ if __name__ == "__main__":
 
     ## Here start the time delay zip
     rdd_time_predicted = rdd_time_estimated.zip(predictions)\
-            .flatMap(lambda words: resplit_predicted_timedelay(words))\
-            .reduceByKey(lambda a,b: reduce_cunc(a,b))
-    save_rdd = rdd_real_day_count.coalesce(1)
+            .flatMap(lambda words: resplit_predicted_timedelay(words))
+    estimated_total_count = rdd_time_predicted.count()
+    save_rdd = rdd_time_predicted.reduceByKey(lambda a,b: reduce_cunc(a,b))\
+            .coalesce(1)
     save_rdd.saveAsTextFile(output_predicted_daycount)
+    tmp_str = "\nNow the estimated total count is %s" % (estimated_total_count)
+    log_write(tmp_str)
     # the save finished
