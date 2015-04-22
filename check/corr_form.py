@@ -50,8 +50,8 @@ if __name__ == "__main__":
     conf = SparkConf().setAppName(appName).setMaster(master)
     sc = SparkContext(conf=conf)
 
-    features_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/delay_libsvm"
-    output_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/delay_corr"
+    features_path = "hdfs://node06:9000/user/function/mb_analysis/0910_analysis/delay_libsvm"
+    output_path = "hdfs://node06:9000/user/function/mb_analysis/0910_analysis/delay_corr"
 
     #features_path= "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/features_sample"
     #features_path = "hdfs://node06:9000/user/function/mb_analysis/gaddafi_analysis/features_allin1"

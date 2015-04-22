@@ -1,0 +1,9 @@
+
+WARNING: Running python applications through ./bin/pyspark is deprecated as of Spark 1.0.
+Use ./bin/spark-submit <python file>
+
+Spark assembly has been built with Hive, including Datanucleus jars on classpath
+  File "/home/function/kechen/mb_codes/midm/check/sub_binladen_retweets_list.py", line 230
+    .reduceByKey(lambda a,b: reduce_cunc(a,b))
+    ^
+IndentationError: unexpected indent

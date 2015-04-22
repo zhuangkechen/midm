@@ -196,17 +196,15 @@ def resplit_only_feature(words):
             tmp_str = tmp_str + tmp_features
         yield (tmp_str)
 
-def split_real_time(line, compare_time):
+def split_real_time(line):
     new_line = line.split("|#|")
     for words in new_line :
         if words.split(":")[0] == "time" :
             the_time = words[5 :]
             t1 = datetime.strptime(the_time, "%Y-%m-%d %H:%M:%S")
-            t2 = datetime.strptime(compare_time, "%Y-%m-%d %H:%M:%S")
-            if t1>t2:
-                tmp_str = "%d-%d" % (t1.month, t1.day)
-                the_day = (t1.month-4)*30 + t1.day
-                yield (the_day, 1)
+            tmp_str = "%d-%d" % (t1.month, t1.day)
+            the_day = (t1.month-4)*30 + t1.day
+            yield (the_day, 1)
 
 
 def split_users(line):
@@ -253,15 +251,15 @@ if __name__ == "__main__":
     master = "spark://node06:7077"
     conf = SparkConf().setAppName(appName).setMaster(master)
     sc = SparkContext(conf=conf)
-    tweets_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/binladen_tweets"
-    features_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/features_allin1"
-    binladen_model_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/Model_trained_tmp"
+    tweets_path = "hdfs://node06:9000/user/function/mb_analysis/0910_analysis/gaddafi_tweets"
+    features_path = "hdfs://node06:9000/user/function/mb_analysis/0910_analysis/features_allin1"
+    binladen_model_path = "hdfs://node06:9000/user/function/mb_analysis/0910_analysis/Model_trained_tmp"
     #tmp_out just for test
-    output_tmp_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/binladen_tmp_out"
+    output_tmp_path = "hdfs://node06:9000/user/function/mb_analysis/0910_analysis/gaddafi_tmp_out"
 
     #output paths
-    output_real_daycount = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/binladen_real_day_count"
-    output_predicted_daycount = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/binladen_predicted_day_count"
+    output_real_daycount = "hdfs://node06:9000/user/function/mb_analysis/0910_analysis/gaddafi_real_day_count"
+    output_predicted_daycount = "hdfs://node06:9000/user/function/mb_analysis/0910_analysis/gaddafi_predicted_day_count"
     # set the compare time
     binladen_time = "2011-05-02 23:59:59"
     # the binladen data timedelay formula:
@@ -279,7 +277,7 @@ if __name__ == "__main__":
 
     #######################
     # save the real day count
-    rdd_real_day_count = tweets_file.flatMap(lambda line: split_real_time(line, binladen_time))
+    rdd_real_day_count = tweets_file.flatMap(lambda line: split_real_time(line))
     real_total_count = rdd_real_day_count.count()
 
     save_rdd = rdd_real_day_count.reduceByKey(lambda a,b: reduce_cunc(a,b))\
@@ -339,7 +337,7 @@ if __name__ == "__main__":
     rdd_time_tmp = rdd_time_estimated.coalesce(1).zip(test_predicted)
     rdd_time_predicted = rdd_time_tmp.flatMap(lambda words: check_predicted_timedelay(words))
     # test
-    output_test = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/binladen_test"
+    output_test = "hdfs://node06:9000/user/function/mb_analysis/0910_analysis/gaddafi_test"
     save_rdd = rdd_time_tmp.coalesce(1)
     save_rdd.saveAsTextFile(output_test)
     predicted_file = sc.textFile(output_test)

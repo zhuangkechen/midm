@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "plot_delay_line.py", line 75, in <module>
+    main()
+  File "plot_delay_line.py", line 71, in main
+    plot(sys.argv[1], savename)
+  File "plot_delay_line.py", line 35, in plot
+    fig = plt.figure(figsize=(7,4))
+  File "/usr/lib/pymodules/python2.7/matplotlib/pyplot.py", line 343, in figure
+    **kwargs)
+  File "/usr/lib/pymodules/python2.7/matplotlib/backends/backend_tkagg.py", line 79, in new_figure_manager
+    return new_figure_manager_given_figure(num, figure)
+  File "/usr/lib/pymodules/python2.7/matplotlib/backends/backend_tkagg.py", line 87, in new_figure_manager_given_figure
+    window = Tk.Tk()
+  File "/usr/lib/python2.7/lib-tk/Tkinter.py", line 1748, in __init__
+    self.tk = _tkinter.create(screenName, baseName, className, interactive, wantobjects, useTk, sync, use)
+_tkinter.TclError: no display name and no $DISPLAY environment variable

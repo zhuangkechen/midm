@@ -1,1 +1,6 @@
 the formula is: Y = -4.19*X + 4.53, from data: delay_libsvm_0405.txt, plot in: Plot_delay.png.
+the formula is: Y = -38.60*X + 42.22, from data: delay_libsvm_0405_real.txt, plot in: have_fun.
+the formula is: Y = -117.79*X + 99.03, from data: delay_libsvm_0405_real.txt, plot in: havefun.
+the formula is: Y = -32.28*X + 79.93, from data: delay_libsvm_0405_real.txt, plot in: havefun.
+the formula is: Y = -117.79*X + 99.00, from data: delay_libsvm_0405_real.txt, plot in: havefun.
+the formula is: Y = -102.95*X + 94.68, from data: delay_libsvm_0910.txt, plot in: havefun.

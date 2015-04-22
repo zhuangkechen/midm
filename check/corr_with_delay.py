@@ -122,11 +122,11 @@ if __name__ == "__main__":
     conf = SparkConf().setAppName(appName).setMaster(master)
     sc = SparkContext(conf=conf)
 
-    tweets_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/tweets_tmp2"
+    tweets_path = "hdfs://node06:9000/user/function/mb_analysis/0910_analysis/tweets_tmp2"
     #
     # here goes the output_path
-    features_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/features_allin1"
-    output_path = "hdfs://node06:9000/user/function/mb_analysis/0405_analysis/delay_libsvm"
+    features_path = "hdfs://node06:9000/user/function/mb_analysis/0910_analysis/features_allin1"
+    output_path = "hdfs://node06:9000/user/function/mb_analysis/0910_analysis/delay_libsvm"
 
     tweets_file = sc.textFile(tweets_path)
     features_file = sc.textFile(features_path)

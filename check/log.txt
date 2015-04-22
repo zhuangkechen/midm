@@ -1,0 +1,35 @@
+Test Error = 0.860986547085
+Test Error = 0.00329862605054
+Now the real total count is 50283Test Error = 0.00168076438241
+Now the estimated total count is 0
+Now the real total count is 50283Test Error = 0.0028978242822
+Now the estimated total count is 0
+Now the real total count is 50283Test Error = 0.00295705394904
+Now the estimated total count is 5
+Now the real total count is 50283
+Now the real total count is 50283
+Now the real total count is 50283Test Error = 1.0413087168e-05
+Now the real total count is 50283Test Error = 4.22564969364e-05
+Now the real total count is 50283
+Now the real total count is 50283Test Error = 6.23843290565e-05
+Now the real total count is 50283Test Error = 4.67493610921e-05
+Now the real total count is 50283Test Error = 5.98360492251e-05
+Now the real total count is 50283
+Now the real total count is 50283Test Error = 0.0
+Now the real total count is 50283Test Error = 0.0
+Now the real total count is 50283Test Error = 0.00263821712064
+Now the real total count is 50283Test Error = 0.000815520645549
+Now the real total count is 50283Test Error = 0.00231201220305
+Now the real total count is 50283Test Error = 0.00265755504935
+Now the real total count is 50283Test Error = 0.00280425148057
+Now the estimated total count is 6
+Now the real total count is 50283Test Error = 0.00230473751601
+Now the estimated total count is 6total_count of features all is 2984575
+Now the real total count is 50283Test Error = 0.0656999787959
+Now the estimated total count is 12197total_count of features all is 32888543
+Now the real total count is 16768Test Error = 0.0681387633185
+Now the estimated total count is 9956
+Now the real total count is 16768Test Error = 0.0653638023756
+Now the estimated total count is 11827total_count of features all is 2581619
+Now the real total count is 44661Test Error = 0.109516318183
+Now the estimated total count is 17544
